@@ -112,7 +112,7 @@ class ShopController extends Controller
                 'order_id' => $order->id,
                 'product_id' => $cart['id'],
                 'quantity' => $cart['capacity'],
-                'price' => $cart['price'],
+                'price' => $cart['price'] * $cart['capacity'],
                 'bank_id' => $request->bank_id,
             ]);
             $product = Product::find($cart['id']);

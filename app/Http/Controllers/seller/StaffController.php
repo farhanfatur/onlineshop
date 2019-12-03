@@ -51,14 +51,16 @@ class StaffController extends Controller
     {
     	$this->validate($request, [
     		'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:sellers',
-            'password' => 'string|min:8|confirmed',
+            'email' => 'required|string|email|max:255',
             'address' => 'required|string',
             'phone' => 'required',
             'datebirth' => 'required|date',
     	]);
     	$seller;
     	if($request->password != "" || $request->confirmation_password != "") {
+            $this->validate($request, [
+                'password' => 'required|string|min:8|confirmed',
+            ]);
     		$seller = Seller::find($request->id)->update([
 	  			'name' => $request->name,
 	  			'email' => $request->email,

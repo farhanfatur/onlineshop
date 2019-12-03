@@ -43,7 +43,7 @@
                         </div>
                         @endif
                         <br>
-                    <button class="btn btn-default" onclick="window.location.href='/'"> << Back</button>
+                    <a href="/" class="btn btn-default"> << Back</a>
                 </div>
             </div>
             @endforeach

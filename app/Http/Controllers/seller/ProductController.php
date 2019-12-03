@@ -7,6 +7,7 @@ use App\Model\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -33,6 +34,7 @@ class ProductController extends Controller
     	$this->validate($request, [
     		'name' => 'required|max:50',
     		'quantity' => 'required',
+            'code' => 'required',
 			'category' => 'required',
 			'price' => 'required',
 			'description' => 'required',
@@ -95,39 +97,39 @@ class ProductController extends Controller
     {
     	$this->validate($request, [
     		'name' => 'required|max:50',
-    		'capacity' => 'required',
+    		'quantity' => 'required',
 			'category' => 'required',
+            'code' => 'required',
 			'price' => 'required',
 			'description' => 'required',
     	]);
 
     	$product = Product::find($request->id);
-
+        $image = $request->name.".png";
     	if($request->image) {
-    		$pathImage = storage_path('app\\public\\product\\'.$post->image);
-            if(File::exists($pathImage)) {
-                File::delete($pathImage);
-            }
+            $file = $request->file('image');
 
       		$image = $request->name.".png";
+            $file->move(storage_path('app/public/product/'), $image);
 
             $product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));
-            if($product->code) {
+            if($request->code != $product->code) {
                 $product->code = $request->code.rand(100, 999);
             }
 			$product->quantity = $request->quantity;
 			$product->category_id = $request->category;
 			$product->price = $request->price;
+            $product->image = $image;
 			$product->description = $request->description;
 			$product->save();
 
-			Storage::putFileAs('public/product/', $request->file('image'), $image);
+			
 
     	}else {
     		$product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));
-            if($product->code) {
+            if($request->code != $product->code) {
                 $product->code = $request->code.rand(100, 999);
             }
 			$product->quantity = $request->quantity;
@@ -135,8 +137,9 @@ class ProductController extends Controller
 			$product->price = $request->price;
 			$product->description = $request->description;
 			$product->save();
-			return redirect()->route('indexProduct');
+			
     	}
+        return redirect()->route('indexProduct');
     }
 
     public function delete($id)

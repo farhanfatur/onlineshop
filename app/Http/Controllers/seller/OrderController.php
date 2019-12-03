@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\seller;
 
+use App\Model\Product;
 use App\Model\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -56,7 +57,11 @@ class OrderController extends Controller
     	$order->cancelfrombuyer = '0';
     	$order->is_cancel = '1';
     	$order->save();
-
+        foreach($order->orderitem as $orderitem) {
+            $product = Product::find($orderitem->product->id);
+            $product->quantity = $product->quantity + $orderitem->quantity;
+            $product->save();
+        }
     	return redirect()->route('indexOrderSeller');
     }
 
@@ -66,7 +71,11 @@ class OrderController extends Controller
     	$order->cancelfrombuyer = '0';
     	$order->is_cancel = '0';
     	$order->save();
-
+        foreach($order->orderitem as $orderitem) {
+            $product = Product::find($orderitem->product->id);
+            $product->quantity = $product->quantity - $orderitem->quantity;
+            $product->save();
+        }
     	return redirect()->route('indexOrderSeller');
     }
 }

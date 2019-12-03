@@ -13,7 +13,7 @@
                        <div class="form-group row">
                            <div class="col-md-8">
                                <label for="name">Name</label>
-                               <input type="text" name="name" class="form-control" value="{{ $product->name }}">
+                               <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ $product->name }}">
                                @error('name')
                                     <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -24,7 +24,7 @@
                        <div class="form-group row">
                            <div class="col-md-4">
                                <label for="capacity">Quantity</label>
-                               <input type="number" name="quantity" class="form-control" value="{{ $product->capacity }}">
+                               <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ $product->quantity }}">
                                @error('capacity')
                                     <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -33,7 +33,7 @@
                            </div>
                            <div class="col-md-4">
                                <label for="category">Category</label>
-                               <select class="form-control" name="category">
+                               <select class="form-control @error('category') is-invalid @enderror" name="category">
                                    @foreach($category as $data)
                                      @if($data->id == $data->category_id)
                                       <option value="{{ $data->id }}" selected>{{ $data->name }}</option>
@@ -52,7 +52,7 @@
                        <div class="form-group row">
                             <div class="col-md-2">
                                     <label for="price">Code</label>
-                                    <input type="text" name="code" class="form-control" value="{{ $data->code }}" maxlength="3">
+                                    <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" value="{{ $product->code }}" maxlength="3">
                                     @error('price')
                                         <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -61,7 +61,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="price">Price</label>
-                                <input type="number" name="price" class="form-control" value="{{ $product->price }}">
+                                <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ $product->price }}">
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -83,7 +83,7 @@
                        <div class="form-group row">
                             <div class="col-md-8">
                                 <label for="price">Image</label>
-                                <input type="file" name="image" class="form-control">
+                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                             </div>
                             @error('image')
                                 <span class="invalid-feedback" role="alert">

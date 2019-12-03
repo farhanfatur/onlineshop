@@ -81,7 +81,7 @@
                                             <b>Yes</b> / <a href="/buyer/order/iscancel/{{ $data->id }}/return" onclick="return confirm('Do you want return back?')">No</a>
                                     @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '1')
                                         <span class="text-danger">Seller is cancel your order</span>
-                                    @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '0')
+                                    @elseif($data->cancelfrombuyer == '1' && $data->is_cancel == '0')
                                         <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
                                     @endif
                                 @else
