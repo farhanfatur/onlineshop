@@ -23,11 +23,11 @@
                    </div>
                    <div class="row">
                        <div class="col-md-12">
-                           <p>{{ $data->description }}</p>
+                           <p>Description: <br>{{ $data->description }}</p>
                        </div>
                    </div>
                    @if(auth()->guard('buyer')->user())
-                            @if($data->capacity > 0)
+                            @if($data->quantity > 0)
                             <form method="POST" action="{{ route('storeCartBuyer') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $data->id }}">
@@ -42,6 +42,7 @@
                             <span class="text-danger">Can't add to cart, please login as buyer first</span>
                         </div>
                         @endif
+                        <br>
                     <button class="btn btn-default" onclick="window.location.href='/'"> << Back</button>
                 </div>
             </div>
