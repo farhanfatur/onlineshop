@@ -13,7 +13,7 @@
                         <tr>
                             <th>No</th>
                             <th>Name</th>
-                            <th>Capacity</th>
+                            <th>Quantity</th>
                             <th>Category</th>
                             <th>Price</th>
                             <th>Activation</th>
@@ -26,7 +26,7 @@
                         <tr>
                             <td>{{ $i++ }}</td>
                             <td>{{ $data->name }}</td>
-                            <td>{{ $data->capacity }}</td>
+                            <td>{{ $data->quantity }}</td>
                             <td>{{ $data->category->name }}</td>
                             <td>{{ $data->price }}</td>
                             <td>

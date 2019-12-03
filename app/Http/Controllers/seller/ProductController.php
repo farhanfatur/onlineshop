@@ -32,7 +32,7 @@ class ProductController extends Controller
     {
     	$this->validate($request, [
     		'name' => 'required|max:50',
-    		'capacity' => 'required',
+    		'quantity' => 'required',
 			'category' => 'required',
 			'price' => 'required',
 			'description' => 'required',
@@ -42,8 +42,9 @@ class ProductController extends Controller
     	$image = $request->name.".png";
     	$product = auth()->guard('seller')->user()->product()->create([
     		'name' => $request->name,
+            'code' => $request->code.rand(100, 999),
     		'name_slug' => strtolower(str_slug($request->name)),
-			'quantity' => $request->capacity,
+			'quantity' => $request->quantity,
 			'category_id' => $request->category,
 			'price' => $request->price,
 			'description' => $request->description,
@@ -112,7 +113,10 @@ class ProductController extends Controller
 
             $product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));
-			$product->quantity = $request->capacity;
+            if($product->code) {
+                $product->code = $request->code.rand(100, 999);
+            }
+			$product->quantity = $request->quantity;
 			$product->category_id = $request->category;
 			$product->price = $request->price;
 			$product->description = $request->description;
@@ -123,7 +127,10 @@ class ProductController extends Controller
     	}else {
     		$product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));
-			$product->quantity = $request->capacity;
+            if($product->code) {
+                $product->code = $request->code.rand(100, 999);
+            }
+			$product->quantity = $request->quantity;
 			$product->category_id = $request->category;
 			$product->price = $request->price;
 			$product->description = $request->description;

@@ -22,13 +22,6 @@
             <strong>{{ $message }}</strong>
         </div>
     @endif
-
-    @if($warning = Session::get('warning'))
-        <div class="alert alert-warning alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button> 
-            <strong>{{ $warning }}</strong>
-        </div>
-    @endif
     <div class="row justify-content-center">
         @foreach($product as $data)
         <div class="col-md-4">

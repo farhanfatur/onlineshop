@@ -42,7 +42,7 @@
                             </td>
                             <td>{{ $data->address }}</td>
                             <td>
-                                {{ $data->total_price }}
+                                Rp.{{ $data->total_price }}
                             </td>
                             <td>
                                 @if($data->is_paymentfrombuyer == '0' || $data->imagepayment == null)

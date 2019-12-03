@@ -44,13 +44,10 @@ class ShopController extends Controller
 
     public function indexCart(Request $request)
     {
-    	$product = $request->session()->get('cart');
-        if($product) {
+    	   $product = $request->session()->get('cart');
             $bank = Bank::all();
             return view('buyer.cart.cart', ['product' => $product, 'bank' =>$bank]);
-        }else {
-            return redirect()->route('indexShop')->with(['warning' => 'Add a product to store first!']);
-        }
+       
     }
 
     public function editCapacityCart(Request $request, $id)
@@ -99,7 +96,7 @@ class ShopController extends Controller
         $order = auth()->guard('buyer')->user()->order()->create([
                 'dateorder' => $now,
                 'is_receive' => '0',
-                'code' => 'TK'.rand(1, 5),
+                'code' => 'TK'.rand(100, 999),
                 'is_paymentreceive' => '0',
                 'is_paymentfrombuyer' => '0',
                 'is_shipped' => '0',

@@ -22,8 +22,8 @@
                        </div>
                        <div class="form-group row">
                            <div class="col-md-4">
-                               <label for="capacity">Capacity</label>
-                               <input type="number" name="capacity" class="form-control" value="{{ old('capacity') }}">
+                               <label for="capacity">Quantity</label>
+                               <input type="number" name="quantity" class="form-control" value="{{ old('capacity') }}">
                                @error('capacity')
                                     <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -45,7 +45,16 @@
                            </div>
                        </div>
                        <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-2">
+                                    <label for="price">Code</label>
+                                    <input type="text" name="code" class="form-control" value="{{ old('code') }}" maxlength="3">
+                                    @error('price')
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                            </div>
+                            <div class="col-md-6">
                                 <label for="price">Price</label>
                                 <input type="number" name="price" class="form-control" value="{{ old('price') }}">
                                 @error('price')

@@ -24,6 +24,7 @@
                             <th>Is Shipped</th>
                             <th>Is Cancel</th>
                             <th>Image Payment Receive</th>
+                            <th>Total Price</th>
                             <th>Date Shipped</th>
                             <th>Action</th>
                         </tr>                     
@@ -37,7 +38,7 @@
                             <td>
                                 @foreach($data->orderitem as $orderitem)
                                     <ul>
-                                        <li>{{ $orderitem->product->name }}</li>
+                                        <li>{{ $orderitem->product->name }} ({{ $orderitem->quantity }} item)</li>
                                     </ul>
                                 @endforeach
                             </td>
@@ -93,6 +94,9 @@
                                 @else
                                 <span class="text-success">You have payment</span>
                                 @endif
+                            </td>
+                            <td>
+                                Rp.{{ $data->total_price }}
                             </td>
                             <td>
                                 {{ $data->dateshipped }}

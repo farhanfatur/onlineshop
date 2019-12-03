@@ -31,6 +31,7 @@
                         <tr>
                             <th>Product</th><th>Quantity</th><th>Price</th><th>Sub Price</th><th>Action</th>
                         </tr>
+                    @if($product != null)
                    @foreach($product as $cart)
                         <tr>
                             <td>{{ $cart['name'] }}</td>
@@ -40,11 +41,17 @@
                             <td><a href="/buyer/cart/editcapacity/{{ $cart['id'] }}" class="btn btn-warning btn-sm">Edit Capacity</a> | <a href="/buyer/cart/deletecapacity/{{ $cart['id'] }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete ?')">x</a> </td>
                         </tr>
                    @endforeach
+                    @else
+                    <tr>
+                        <td class="5"><span class="text-danger">Order Product is empty</span></td>
+                    </tr>
+                    @endif
                         <tr>
                             <td colspan="3">
                                 Total Price
                             </td>
                             <td>
+                                @if($product != null)
                                 @php
                                     $total = 0;
                                 @endphp
@@ -54,6 +61,9 @@
                                 @endphp
                                 @endforeach
                                 <input type="hidden" name="total_price" value="{{ $total }}">{{ $total }}
+                                @else
+                                Rp. 0
+                                @endif
                             </td>
                             <td>
                                 <input type="submit" name="submit" class="btn btn-primary" onclick="return confirm('Are you sure to order ?')">
