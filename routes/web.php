@@ -88,7 +88,7 @@ Route::prefix('buyer')->group(function() {
 		Route::get('/cart', 'ShopController@indexCart')->name('indexCart');
 		Route::get('/cart/editcapacity/{id}', 'ShopController@editCapacityCart');
 		Route::get('/cart/deletecapacity/{id}', 'ShopController@deleteCapacityCart');
-		Route::post('/cart/updatecapacity/', 'ShopController@updateCapacityCart')->name('updateCapacityCart');
+		Route::post('/cart/updatecapacity/', 'ShopController@updateQuantityCart')->name('updateQuantityCart');
 		Route::post('/cart/order/store', 'ShopController@storeOrderCart')->name('storeOrderCart');
 
 		Route::get('/profile', 'buyer\ProfileController@index')->name('indexProfile');

@@ -15,4 +15,9 @@ class Buyer extends Authenticatable
     {
         return $this->hasMany('App\Model\Order');
     }
+
+    public function orderitem()
+    {
+        return $this->hasMany('App\Model\OrderItem');
+    }
 }

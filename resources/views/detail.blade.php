@@ -16,7 +16,7 @@
                    </div>
                    <div class="row">
                        <div class="col-md-8">
-                           <span>Stock : <b>{{ $data->capacity }}</b></span><br>
+                           <span>Stock : <b>{{ $data->quantity }}</b></span><br>
                            <span>Price: <b>Rp.{{ $data->price }}</b></span><br>
                            <span>Category: <b>{{ $data->category->name }}</b></span>
                        </div>

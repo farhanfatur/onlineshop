@@ -8,18 +8,15 @@ class Order extends Model
 {
     protected $guarded = [];
 
+
+    public function orderitem()
+    {
+        return $this->hasMany("App\Model\OrderItem");
+    }
+
     public function buyer()
     {
     	return $this->belongsTo('App\Model\Buyer');
     }
 
-    public function product()
-    {
-    	return $this->belongsTo('App\Model\Product');
-    }
-
-    public function bank()
-    {
-    	return $this->belongsTo('App\Model\Bank');
-    }
 }

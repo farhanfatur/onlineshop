@@ -43,7 +43,7 @@ class ProductController extends Controller
     	$product = auth()->guard('seller')->user()->product()->create([
     		'name' => $request->name,
     		'name_slug' => strtolower(str_slug($request->name)),
-			'capacity' => $request->capacity,
+			'quantity' => $request->capacity,
 			'category_id' => $request->category,
 			'price' => $request->price,
 			'description' => $request->description,
@@ -112,7 +112,7 @@ class ProductController extends Controller
 
             $product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));
-			$product->capacity = $request->capacity;
+			$product->quantity = $request->capacity;
 			$product->category_id = $request->category;
 			$product->price = $request->price;
 			$product->description = $request->description;
@@ -123,7 +123,7 @@ class ProductController extends Controller
     	}else {
     		$product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));
-			$product->capacity = $request->capacity;
+			$product->quantity = $request->capacity;
 			$product->category_id = $request->category;
 			$product->price = $request->price;
 			$product->description = $request->description;

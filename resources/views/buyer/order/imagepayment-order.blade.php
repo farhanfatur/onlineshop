@@ -17,6 +17,10 @@
                                 <input type="file" name="imagepayment" class="form-control">
                             </div>
                         </div>
+                        @if($order->imagepayment != null)
+                        <p>Your payment receive before :</p>
+                        <img src="{{ asset('storage/buyer/'.$order->imagepayment) }}">
+                        @endif
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <button type="submit" class="btn btn-primary">Upload</button>

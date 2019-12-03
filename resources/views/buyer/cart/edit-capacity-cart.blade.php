@@ -4,15 +4,20 @@
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card">
-                <div class="card-header">Edit Capacity</div>
+                <div class="card-header">Edit Quantity</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('updateCapacityCart') }}">
+                    @if($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                     {{$errors->first()}}
+                    </div>
+                    @endif
+                    <form method="POST" action="{{ route('updateQuantityCart') }}">
                         @csrf
                         <input type="hidden" name="id" value="{{ $id }}">
                         <div class="form-group row">
                             <div class="col-md-5">
-                                <label for="capacity">Capacity</label>
+                                <label for="quantity">Quantity</label>
                                 @foreach(Session::get('cart') as $data)
                                     @if($data['id'] == $id)
                                         <input type="number" name="capacity" value="{{ $data['capacity'] }}" class="form-control">

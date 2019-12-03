@@ -7,10 +7,15 @@
                 <div class="card-header">Order</div>
 
                 <div class="card-body">
-                   
+                   @if($error = Session::get('dateError'))
+                    <div class="alert alert-danger alert-block">
+                        <button type="button" class="close" data-dismiss="alert">×</button> 
+                        <strong>{{ $error }}</strong>
+                    </div>
+                    @endif
                     <table class="table table-bordered">
                         <tr>
-                            <th>No</th>
+                            <td>No</td>
                             <th>Date Order</th>
                             <th>Product</th>
                             <th>Address Destination</th>
@@ -19,8 +24,9 @@
                             <th>Is Shipped</th>
                             <th>Is Cancel</th>
                             <th>Image Payment Receive</th>
+                            <th>Date Shipped</th>
                             <th>Action</th>
-                        </tr>
+                        </tr>                     
                         @php
                         $i = 1;
                         @endphp
@@ -28,7 +34,13 @@
                         <tr>
                             <td>{{ $i++ }}</td>
                             <td>{{ $data->dateorder }}</td>
-                            <td>{{ $data->product->name }}</td>
+                            <td>
+                                @foreach($data->orderitem as $orderitem)
+                                    <ul>
+                                        <li>{{ $orderitem->product->name }}</li>
+                                    </ul>
+                                @endforeach
+                            </td>
                             <td>{{ $data->address }}</td>
                             <td>
                                 @if($data->is_receive == '0')
@@ -60,14 +72,19 @@
                                 @endif
                             </td>
                             <td>
-                                @if($data->cancelfrombuyer == null && $data->is_cancel == '0')
-                                <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>@elseif($data->cancelfrombuyer == '1' && $data->is_cancel == '1')
-                                    <span class="text-danger">Your order is cancel, want return back ?</span><br>
-                                        <b>Yes</b> / <a href="/buyer/order/iscancel/{{ $data->id }}/return" onclick="return confirm('Do you want return back?')">No</a>
-                                @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '1')
-                                    <span class="text-danger">Seller is cancel your order</span>
-                                @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '0')
-                                    <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
+                                @if($data->is_shipped == '0')
+                                    @if($data->cancelfrombuyer == null && $data->is_cancel == '0')
+                                        <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
+                                    @elseif($data->cancelfrombuyer == '1' && $data->is_cancel == '1')
+                                        <span class="text-danger">Your order is cancel, want return back ?</span><br>
+                                            <b>Yes</b> / <a href="/buyer/order/iscancel/{{ $data->id }}/return" onclick="return confirm('Do you want return back?')">No</a>
+                                    @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '1')
+                                        <span class="text-danger">Seller is cancel your order</span>
+                                    @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '0')
+                                        <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
+                                    @endif
+                                @else
+                                    <span class="text-success">Data is shipped</span>
                                 @endif
                             </td>
                             <td>
@@ -76,6 +93,9 @@
                                 @else
                                 <span class="text-success">You have payment</span>
                                 @endif
+                            </td>
+                            <td>
+                                {{ $data->dateshipped }}
                             </td>
                             <td>
                                 @if($data->cancelfrombuyer == '0' && $data->is_cancel == '1')

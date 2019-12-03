@@ -12,7 +12,7 @@ class ShopController extends Controller
     public function storeCart(Request $request)
     {
     	$product = Product::find($request->id);
-    	if($request->capacity > $product->capacity) {
+    	if($request->capacity > $product->quantity) {
     		return redirect()->back()->with(['stockTooMuch' => 'your request is too much']);
     	}else {
     		if($request->session()->get('cart') == null) {
@@ -39,14 +39,18 @@ class ShopController extends Controller
 		    }
     	}
 
-    	return redirect()->route('indexShop');
+    	return redirect()->route('indexShop')->with(['messageCart' => $product->name." is store to cart"]);
     }
 
     public function indexCart(Request $request)
     {
     	$product = $request->session()->get('cart');
-    	$bank = Bank::all();
-    	return view('buyer.cart.cart', ['product' => $product, 'bank' =>$bank]);
+        if($product) {
+            $bank = Bank::all();
+            return view('buyer.cart.cart', ['product' => $product, 'bank' =>$bank]);
+        }else {
+            return redirect()->route('indexShop')->with(['warning' => 'Add a product to store first!']);
+        }
     }
 
     public function editCapacityCart(Request $request, $id)
@@ -54,23 +58,33 @@ class ShopController extends Controller
     	return view('buyer.cart.edit-capacity-cart', ['id' => $id]);
     }
 
-    public function updateCapacityCart(Request $request)
+    public function updateQuantityCart(Request $request)
     {
     	$carts = $request->session()->get('cart');
-    	if(in_array($request->id, array_column($carts, 'id'))) {
-    		$id = array_search($request->id, array_column($carts, 'id'));
-    		$carts[$id]['capacity'] = $request->capacity;
-    		$carts[$id]['total_price'] = $carts[$id]['price'] * $request->capacity;
-    	}
-    	Session::put('cart', $carts);
+        $product = Product::find($request->id);
+        if(intval($request->capacity) > $product->quantity) {
+            return redirect()->back()->withErrors('Quantity is too much');
+        }else {
+            if(in_array($request->id, array_column($carts, 'id'))) {
+                $id = array_search($request->id, array_column($carts, 'id'));
+                $carts[$id]['capacity'] = $request->capacity;
+                $carts[$id]['total_price'] = $carts[$id]['price'] * $request->capacity;
+            }
+            Session::put('cart', $carts);
+        }
     	return redirect()->route('indexCart');
-    	// dd($request->input());
     }
 
     public function deleteCapacityCart(Request $request, $id)
     {
     	$carts = $request->session()->get('cart');
-    	$id = array_search($request->id, array_column($carts, 'id'));
+        if(count($carts) <= 1){
+            foreach($carts as $i => $data) {
+                $id = $i;
+            }
+        }else {
+            $id = array_search($request->id, array_column($carts, 'id'));
+        }
     	$request->session()->forget('cart.'.$id);
 
     	return redirect()->route('indexCart');
@@ -82,23 +96,31 @@ class ShopController extends Controller
     	$start_date = strtotime($now);
     	$end_date = strtotime("+ 5 day", $start_date);
     	$carts = $request->session()->get('cart');
+        $order = auth()->guard('buyer')->user()->order()->create([
+                'dateorder' => $now,
+                'is_receive' => '0',
+                'code' => 'TK'.rand(1, 5),
+                'is_paymentreceive' => '0',
+                'is_paymentfrombuyer' => '0',
+                'is_shipped' => '0',
+                'is_cancel' => '0',
+                'address' => $request->address,
+                'cancelfrombuyer' => null,
+                'total_price' => $request->total_price,
+                'dateshipped' => date('Y-m-d', $end_date),
+                'imagepayment' => null,
+            ]);
     	foreach($carts as $cart) {
-    		auth()->guard('buyer')->user()->order()->create([
-	    		'dateorder' => $now,
-	    		'is_receive' => '0',
-	    		'is_paymentreceive' => '0',
-	    		'is_paymentfrombuyer' => '0',
-	    		'is_shipped' => '0',
-	    		'is_cancel' => '0',
-	    		'product_id' => $cart['id'],
-	    		'bank_id' => $request->bank_id,
-	    		'address' => $request->address,
-	    		'cancelfrombuyer' => null,
-                'capacity' => $cart->capacity,
-	    		'total_price' => $request->total_price,
-	    		'dateshipped' => date('Y-m-d', $end_date),
-	    		'imagepayment' => null,
-	    	]);
+            $order->orderitem()->create([
+                'order_id' => $order->id,
+                'product_id' => $cart['id'],
+                'quantity' => $cart['capacity'],
+                'price' => $cart['price'],
+                'bank_id' => $request->bank_id,
+            ]);
+            $product = Product::find($cart['id']);
+            $product->quantity = $product->quantity - $cart['capacity'];
+            $product->save();
     	}
     	$request->session()->forget('cart');
     	return redirect()->route('indexShop');

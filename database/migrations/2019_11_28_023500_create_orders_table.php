@@ -16,19 +16,20 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('dateorder');
+
             $table->unsignedBigInteger('buyer_id');
             $table->enum('is_receive', ['1', '0']);
             $table->enum('is_paymentreceive', ['1', '0']);
+            $table->enum('is_paymentfrombuyer', ['1', '0']);
             $table->enum('is_shipped', ['1', '0']);
             $table->enum('is_cancel', ['1', '0']);
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('bank_id');
+            $table->enum('cancelfrombuyer', ['1', '0'])->nullable();
+            
             $table->string('address');
             $table->string('imagepayment');
+            $table->date('dateshipped');
 
             $table->foreign('buyer_id')->references('id')->on('buyers')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade');
             $table->timestamps();
             
         });

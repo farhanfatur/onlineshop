@@ -24,12 +24,12 @@
                     <div class="form-group row">
                         <div class="col-md-5">
                             <label for="address">Address Destination</label>
-                            <input type="text" name="address" class="form-control">
+                            <input type="text" name="address" class="form-control" required>
                         </div>
                     </div>
                     <table class="table table-bordered">
                         <tr>
-                            <th>Product</th><th>Capacity</th><th>Price</th><th>Sub Price</th><th>Action</th>
+                            <th>Product</th><th>Quantity</th><th>Price</th><th>Sub Price</th><th>Action</th>
                         </tr>
                    @foreach($product as $cart)
                         <tr>
