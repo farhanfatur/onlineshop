@@ -39,8 +39,10 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
         $now = date('Y-m-d');
-        if($now >= $order->dateshipped) {
+
+        if($now >= $order->datereceive) {
             $order->status_id = 4;
+            $order->datereceive = $now;
             $order->save();
         }else {
             return redirect()->route('indexOrderBuyer')->with(['dateError' => 'Product is not shipped this day']);

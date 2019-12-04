@@ -23,7 +23,7 @@
                             <th>Is Receive</th>
                             <th>Is Cancel</th>                            
                             <th>Total Price</th>
-                            <th>Date Shipped</th>
+                            <th>Date Receive</th>
                         </tr>                     
                         @php
                         $i = 1;
@@ -87,7 +87,7 @@
                                 Rp.{{ number_rupiah($data->total_price) }}
                             </td>
                             <td>
-                                {{ $data->dateshipped }}
+                                {{ $data->datereceive }}
                             </td>
                         </tr>
                         @endforeach

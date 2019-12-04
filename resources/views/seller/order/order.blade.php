@@ -12,7 +12,7 @@
                         <tr>
                             <th>No</th>
                             <th>Date Order</th>
-                            <th>Date Shipped</th>
+                            <th>Date Receive</th>
                             <th>Buyer</th>
                             <th>Product</th>
                             <th>Address</th>
@@ -28,14 +28,18 @@
                         <tr>
                             <td>{{ $i++ }}</td>
                             <td>{{ $data->dateorder }}</td>
-                            <td>{{ $data->dateshipped }}</td>
+                            <td>
+                                @if($data->datereceive == null)
+                                    <span class="text-danger">the product is not receive</span>
+                                @else
+                                    <span class="text-success">the product is receive</span>
+                                @endif
+                                </td>
                             <td>{{ $data->buyer->name }}</td>
                             <td>
                                 <ul>
                                 @foreach($data->orderitem  as $orderitem)
-                                    
-                                        <li>{{ $orderitem->product->name }} ({{ $orderitem->quantity }} item)</li>
-                                    
+                                    <li>{{ $orderitem->product->name }} ({{ $orderitem->quantity }} item)</li>
                                 @endforeach
                                 </ul>
                             </td>

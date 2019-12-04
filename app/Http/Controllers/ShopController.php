@@ -95,8 +95,6 @@ class ShopController extends Controller
     {
         if($request->session()->has('cart')) {
             $now = date('Y-m-d');
-            $start_date = strtotime($now);
-            $end_date = strtotime("+ 5 day", $start_date);
             $carts = $request->session()->get('cart');
             $order = auth()->guard('buyer')->user()->order()->create([
                     'dateorder' => $now,
@@ -105,7 +103,7 @@ class ShopController extends Controller
                     'address' => $request->address,
                     'statuscancel_id' => 3,
                     'total_price' => $request->total_price,
-                    'dateshipped' => date('Y-m-d', $end_date),
+                    'datereceive' => null,
                     'imagepayment' => null,
                 ]);
             foreach($carts as $cart) {
