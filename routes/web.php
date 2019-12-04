@@ -64,8 +64,8 @@ Route::prefix('seller')->group(function() {
 		Route::post('/staff/update', 'seller\StaffController@update')->name('updateStaff');
 
 		Route::get('/order', 'seller\OrderController@index')->name('indexOrderSeller');
-		Route::get('/order/receive/active/{id}', 'seller\OrderController@isReceiveActive');
-		Route::get('/order/receive/deactive/{id}', 'seller\OrderController@isReceiveDeactive');
+		Route::get('/order/shipped/active/{id}', 'seller\OrderController@isShippedActive');
+		Route::get('/order/shipped/deactive/{id}', 'seller\OrderController@isShippedDeactive');
 		Route::get('/order/paymentreceive/active/{id}', 'seller\OrderController@isPaymentReceiveActive');
 		Route::get('/order/paymentreceive/deactive/{id}', 'seller\OrderController@isPaymentReceiveDeactive');
 		Route::get('/order/cancel/active/{id}', 'seller\OrderController@isCancelSellerActive');
@@ -88,6 +88,7 @@ Route::prefix('buyer')->group(function() {
 		Route::get('/cart', 'ShopController@indexCart')->name('indexCart');
 		Route::get('/cart/editcapacity/{id}', 'ShopController@editCapacityCart');
 		Route::get('/cart/deletecapacity/{id}', 'ShopController@deleteCapacityCart');
+		Route::post('/cart/editquantity', 'ShopController@editQuantity')->name('editQuantity');
 		Route::post('/cart/updatecapacity/', 'ShopController@updateQuantityCart')->name('updateQuantityCart');
 		Route::post('/cart/order/store', 'ShopController@storeOrderCart')->name('storeOrderCart');
 
@@ -96,9 +97,8 @@ Route::prefix('buyer')->group(function() {
 
 		Route::get('/order', 'buyer\OrderController@index')->name('indexOrderBuyer');
 		Route::post('/order/imagepayment/store', 'buyer\OrderController@storeImagePayment')->name('storeImagePayment');
-		Route::get('/order/imagepayment/{id}', 'buyer\OrderController@indexImagePayment');
-		Route::get('/order/isshipped/{id}', 'buyer\OrderController@isShippedActive');
-		Route::get('/order/isnotshipped/{id}', 'buyer\OrderController@isShippedDeactive');
+		Route::get('/order/isreceive/{id}', 'buyer\OrderController@isReceiveActive');
+		Route::get('/order/isnotreceive/{id}', 'buyer\OrderController@isReceiveDeactive');
 		Route::get('/order/iscancel/{id}', 'buyer\OrderController@isCancel');
 		Route::get('/order/iscancel/{id}/return', 'buyer\OrderController@isCancelReturn');
 	});

@@ -18,7 +18,6 @@
                             <th>Address</th>
                             <th>Total Price</th>
                             <th>Is Payment Receive</th>
-                            <th>Is Receive</th>
                             <th>Is Shipped</th>
                             <th>Is Cancel</th>
                         </tr>
@@ -42,43 +41,41 @@
                             </td>
                             <td>{{ $data->address }}</td>
                             <td>
-                                Rp.{{ $data->total_price }}
+                                Rp.{{ number_rupiah($data->total_price) }}
                             </td>
                             <td>
-                                @if($data->is_paymentfrombuyer == '0' || $data->imagepayment == null)
+                                @if($data->status_id < '2')
                                     <span class="text-danger">{{$data->buyer->name}} have not made payment</span>
                                 @else
-                                    @if($data->is_paymentreceive == '0')
-                                    <span class="text-success">{{$data->buyer->name}} is send payment receive, want a confirm payment ?</span><br>
-                                        <a href="/seller/order/paymentreceive/active/{{ $data->id }}">Yes</a> / <b>No</b>
+                                    @if($data->status_id >= '2' && $data->status_id <= '4')
+                                        <span class="text-success">Payment Receive is send</span><br>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#orderPaymentImage" onclick="showPaymentImage('{{ $data->imagepayment }}')">Show Image</button>
+                                    @elseif($data->status_id == '1')
+                                        <span class="text-danger">Buyer isn't paid</span>
                                     @else
-                                        <span class="text-success">Payment Receive is confirm</span>
+                                        <span class="text-danger">The order has been canceled</span>
                                     @endif
                                 @endif
                             </td>
                             <td>
-                                @if($data->is_paymentreceive == '1')
-                                    @if($data->is_receive == '0')
-                                        <a href="/seller/order/receive/active/{{ $data->id }}" onclick="return confirm('Do you want receive ?')">Active</a> / <b>Deactive</b>
-                                    @else
-                                        <b>Active</b> / <a href="/seller/order/receive/deactive/{{ $data->id }}">Deactive</a>
-                                    @endif
+
+                               @if($data->status_id == 2)
+                                    <a href="/seller/order/shipped/active/{{ $data->id }}">Yes</a> / <b>No</b>
+                               @elseif($data->status_id == 1)
+                                    <span class="text-danger">{{$data->buyer->name}} have not made payment</span>
+                                @elseif($data->status_id >= 5 && $data->status_id <= 6)
+                                    <span class="text-danger">The order has been canceled</span>
                                 @else
-                                    <span class="text-danger">Confirm a payment receive first</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($data->is_shipped == '0')
-                                <span class="text-danger">Product is not shipped</span>
-                                @else
-                                <span class="text-success">Product is shipped</span>
-                                @endif
+                                    <span class="text-success">The product is shipped</span>
+                               @endif
                             </th>
                             <td>
-                                @if($data->is_receive == '1' && $data->is_paymentreceive == '1' && $data->is_paymentfrombuyer == '1' && $data->is_shipped == '1')
+                                @if($data->status_id == 4)
                                     <span class="text-success">The order is success</span>
+                                @elseif($data->status_id == 3)
+                                    <span class="text-success">Wait for order arrived </span>
                                 @else
-                                    @if($data->is_cancel == '0')
+                                    @if($data->status_id >= 1 && $data->status_id <= 4)
                                     <a href="/seller/order/cancel/active/{{ $data->id }}" onclick="return confirm('Do you want cancel this order?')">Active</a> / <b>Deactive</b>
                                     @else
                                     <b>Active</b> / <a href="/seller/order/cancel/deactive/{{ $data->id }}" onclick="return confirm('Want return back?')">Deactive</a>
@@ -92,4 +89,27 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="orderPaymentImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+               
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Image Payment</h5>
+                        </div>
+                        <div class="modal-body">
+                           <img id="imagePayment" class="modal-content">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+    <script type="text/javascript">
+        function showPaymentImage(imageName) {
+            $("#imagePayment").attr("src", "{{ asset('storage/buyer/') }}"+"/"+imageName)
+        }
+    </script>
 @endsection

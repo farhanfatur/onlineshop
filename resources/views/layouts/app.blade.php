@@ -98,4 +98,12 @@
         </main>
     </div>
 </body>
+<script type="text/javascript">
+    function number_rupiah(angka){
+        var reverse = angka.toString().split('').reverse().join('');
+        var ribuan  = reverse.match(/\d{1,3}/g);
+            ribuan  = ribuan.join('.').split('').reverse().join('');
+        return ribuan;
+    }
+</script>
 </html>

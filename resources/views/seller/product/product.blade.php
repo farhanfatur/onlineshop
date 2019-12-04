@@ -28,7 +28,7 @@
                             <td>{{ $data->name }}</td>
                             <td>{{ $data->quantity }}</td>
                             <td>{{ $data->category->name }}</td>
-                            <td>{{ $data->price }}</td>
+                            <td>{{ number_rupiah($data->price) }}</td>
                             <td>
                                 @if($data->is_sold == '0')
                                 <a href="/seller/product/active/{{ $data->id }}">Active</a> / <b>Deactive</b>

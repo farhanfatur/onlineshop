@@ -17,7 +17,7 @@
                    <div class="row">
                        <div class="col-md-8">
                            <span>Stock : <b>{{ $data->quantity }}</b></span><br>
-                           <span>Price: <b>Rp.{{ $data->price }}</b></span><br>
+                           <span>Price: <b>Rp.{{ number_rupiah($data->price) }}</b></span><br>
                            <span>Category: <b>{{ $data->category->name }}</b></span>
                        </div>
                    </div>
@@ -31,7 +31,7 @@
                             <form method="POST" action="{{ route('storeCartBuyer') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $data->id }}">
-                                <input type="number" name="capacity" >
+                                <input type="number" name="capacity" min="1">
                                 <button class="btn btn-primary" type="submit">Add to Cart</button>
                             </form>
                             @else

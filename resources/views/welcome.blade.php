@@ -31,8 +31,14 @@
                 <div class="card-body">
                     <img src="{{ asset('storage/product/'.$data->image) }}" class="card-img">
                     <p>
-                        <span>Stock : <b>{{ $data->quantity }}</b></span><br>
-                        <span>Price: <b>Rp.{{ $data->price }}</b></span><br>
+                        <span>Stock : 
+                            @if($data->quantity <= 0)
+                                <span>0</span>
+                            @else
+                            <b>{{ $data->quantity }}</b>
+                            @endif
+                        </span><br>
+                        <span>Price: <b>Rp.{{ number_rupiah($data->price) }}</b></span><br>
                         <span>Category: <b>{{ $data->category->name }}</b></span>
                     </p>
                         @if(auth()->guard('buyer')->user())
@@ -40,7 +46,7 @@
                             <form method="POST" action="{{ route('storeCartBuyer') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $data->id }}">
-                                <input type="number" name="capacity" >
+                                <input type="number" name="capacity" min="1">
                                 <button class="btn btn-primary" type="submit">Add to Cart</button>
                             </form>
                             @else

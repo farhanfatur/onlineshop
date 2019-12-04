@@ -19,14 +19,11 @@
                             <th>Date Order</th>
                             <th>Product</th>
                             <th>Address Destination</th>
-                            <th>Is Receive</th>
                             <th>Is Payment Receive</th>
-                            <th>Is Shipped</th>
-                            <th>Is Cancel</th>
-                            <th>Image Payment Receive</th>
+                            <th>Is Receive</th>
+                            <th>Is Cancel</th>                            
                             <th>Total Price</th>
                             <th>Date Shipped</th>
-                            <th>Action</th>
                         </tr>                     
                         @php
                         $i = 1;
@@ -44,69 +41,53 @@
                             </td>
                             <td>{{ $data->address }}</td>
                             <td>
-                                @if($data->is_receive == '0')
-                                    <span class="text-danger">Product is not receive</span>
+                                @if($data->status_id == 5 || $data->status_id == 6)
+                                    <span class="text-danger">The order has been canceld</span>
                                 @else
-                                    <span class="text-success">Product is receive</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($data->is_paymentfrombuyer == '0' || $data->imagepayment == null)
-                                    <span class="text-danger">You have not made payment</span>
-                                @else
-                                    @if($data->is_paymentreceive == '1')
-                                        <span class="text-success">Your payment receive are confirm</span>
+                                    @if($data->imagepayment == null)
+                                        <p class="text-danger">You haven't pay for produck</p>
+                                        <button class="btn btn-warning" onclick="showModal('{{ $data->id }}')" data-toggle="modal" data-target="#orderImage">Upload Payment</button>
                                     @else
-                                        <span class="text-success">Your payment receive are send</span>
+                                        <span class="success">You already for paid the product</span>
                                     @endif
                                 @endif
                             </td>
                             <td>
-                                @if($data->cancelfrombuyer == '0' && $data->is_cancel == '1')
-                                    <span class="text-danger">Seller is cancel your order</span>
+                                @if($data->statuscancel_id == 2 || $data->statuscancel_id == 1)
+                                    <span class="text-danger">The order has been canceled</span>
                                 @else
-                                    @if($data->is_shipped == '0')
-                                        <a href="/buyer/order/isshipped/{{ $data->id }}" onclick="return confirm('Are you sure the product is shipped ?')">Yes</a> / <b>No</b>
+                                    @if($data->status_id >= 3 && $data->status_id < 4)
+                                        <div class="alert alert-danger">
+                                            <span class="text-danger">Is the product receive?</span><br>
+                                            <a href="/buyer/order/isreceive/{{ $data->id }}" class="btn btn-success btn-sm" onclick="return confirm('Are you sure?')">Yes</a>
+                                        </div>
+                                    @elseif($data->status_id == 4)
+                                        <span class="text-success">Congratulation!! Your product is receive</span>
                                     @else
-                                        <b>Yes</b> / <a href="/buyer/order/isnotshipped/{{ $data->id }}" onclick="return confirm('Are you sure about that ?')">No</a>
+                                        <span class="text-danger">Please wait a minute for receive</span>
                                     @endif
                                 @endif
                             </td>
                             <td>
-                                @if($data->is_shipped == '0')
-                                    @if($data->cancelfrombuyer == null && $data->is_cancel == '0')
-                                        <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
-                                    @elseif($data->cancelfrombuyer == '1' && $data->is_cancel == '1')
-                                        <span class="text-danger">Your order is cancel, want return back ?</span><br>
-                                            <b>Yes</b> / <a href="/buyer/order/iscancel/{{ $data->id }}/return" onclick="return confirm('Do you want return back?')">No</a>
-                                    @elseif($data->cancelfrombuyer == '0' && $data->is_cancel == '1')
-                                        <span class="text-danger">Seller is cancel your order</span>
-                                    @elseif($data->cancelfrombuyer == '1' && $data->is_cancel == '0')
-                                        <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
+                                @if($data->status_id == 4)
+                                    <span class="text-success">Can't cancel because product has been receive</span>
+                                @else
+                                    @if($data->imagepayment != "" && $data->status_id >= 2 && $data->status_id <= 4)
+                                        <span class="text-success">You have ready the payment</span>
+                                    @else
+                                        @if($data->status_id == 1)
+                                            <a href="/buyer/order/iscancel/{{ $data->id }}">Yes</a> / <b>No</b>
+                                        @else
+                                            <b>Yes</b> / <a href="/buyer/order/iscancel/{{$data->id}}/return">No</a>
+                                        @endif
                                     @endif
-                                @else
-                                    <span class="text-success">Data is shipped</span>
                                 @endif
                             </td>
                             <td>
-                                @if($data->imagepayment == null)
-                                <span class="text-danger">You dont't have payment</span>
-                                @else
-                                <span class="text-success">You have payment</span>
-                                @endif
-                            </td>
-                            <td>
-                                Rp.{{ $data->total_price }}
+                                Rp.{{ number_rupiah($data->total_price) }}
                             </td>
                             <td>
                                 {{ $data->dateshipped }}
-                            </td>
-                            <td>
-                                @if($data->cancelfrombuyer == '0' && $data->is_cancel == '1')
-                                    <span class="text-danger">You can't order because seller is cancel</span>
-                                @else
-                                <a href="/buyer/order/imagepayment/{{ $data->id }}" class="btn btn-warning">Upload Image Payment</a>
-                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -115,4 +96,33 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="orderImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form method="POST" action="{{ route('storeImagePayment') }}" enctype="multipart/form-data">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Upload Image</h5>
+                        </div>
+                        <div class="modal-body">
+                            @csrf
+                            <input type="hidden" name="id" id="id">
+                            <label>Choose Image</label>
+                            <div class="form-group">
+                                <input type="file" name="imagepayment" required="required" class="form-control">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function showModal(id) {
+                $("#id").val(id);
+            }
+        </script>
 @endsection

@@ -39,6 +39,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helper/formatRupiah.php"
         ]
     },
     "autoload-dev": {

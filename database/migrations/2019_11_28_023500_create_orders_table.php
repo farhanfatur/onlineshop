@@ -18,18 +18,15 @@ class CreateOrdersTable extends Migration
             $table->date('dateorder');
 
             $table->unsignedBigInteger('buyer_id');
-            $table->enum('is_receive', ['1', '0']);
-            $table->enum('is_paymentreceive', ['1', '0']);
-            $table->enum('is_paymentfrombuyer', ['1', '0']);
-            $table->enum('is_shipped', ['1', '0']);
-            $table->enum('is_cancel', ['1', '0']);
-            $table->enum('cancelfrombuyer', ['1', '0'])->nullable();
-            
+            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('statuscancel_id');
             $table->string('address');
             $table->string('imagepayment');
             $table->date('dateshipped');
 
             $table->foreign('buyer_id')->references('id')->on('buyers')->onDelete('cascade');
+            $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade');
+            $table->foreign('statuscancel_id')->references('id')->on('statuscancels')->onDelete('cascade');
             $table->timestamps();
             
         });

@@ -15,21 +15,19 @@ class OrderController extends Controller
     	return view('seller.order.order', ['order' => $order]);
     }
 
-    public function isReceiveActive($id)
+    public function isShippedActive($id)
     {
     	$order = Order::findOrFail($id);
-    	$order->is_receive = '1';
+    	$order->status_id = 3;
     	$order->save();
-
     	return redirect()->route('indexOrderSeller');
     }
 
-    public function isReceiveDeactive($id)
+    public function isShippedDeactive($id)
     {
     	$order = Order::findOrFail($id);
-    	$order->is_receive = '0';
+    	$order->status_id = 2;
     	$order->save();
-
     	return redirect()->route('indexOrderSeller');
     }
 
@@ -54,12 +52,11 @@ class OrderController extends Controller
     public function isCancelSellerActive($id)
     {
     	$order = Order::findOrFail($id);
-    	$order->cancelfrombuyer = '0';
-    	$order->is_cancel = '1';
+    	$order->status_id = 6;
     	$order->save();
         foreach($order->orderitem as $orderitem) {
             $product = Product::find($orderitem->product->id);
-            $product->quantity = $product->quantity + $orderitem->quantity;
+            $product->quantity += $orderitem->quantity;
             $product->save();
         }
     	return redirect()->route('indexOrderSeller');
@@ -68,11 +65,17 @@ class OrderController extends Controller
     public function isCancelSellerDeactive($id)
     {
     	$order = Order::findOrFail($id);
-    	$order->cancelfrombuyer = '0';
-    	$order->is_cancel = '0';
+        if($order->imagepayment == null) {
+            $order->status_id = 1;
+        }else {
+            $order->status_id = 2;
+        }
     	$order->save();
         foreach($order->orderitem as $orderitem) {
             $product = Product::find($orderitem->product->id);
+            if($product->quantity <= 0) {
+                $product->quantity = 0;
+            }
             $product->quantity = $product->quantity - $orderitem->quantity;
             $product->save();
         }

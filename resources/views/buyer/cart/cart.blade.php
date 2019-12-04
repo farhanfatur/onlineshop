@@ -8,6 +8,11 @@
 
                 <div class="card-body">
                     <h3>Submit Cart</h3>
+                    @if($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                     {{$errors->first()}}
+                    </div>
+                    @endif
                     <hr>
                     <form method="POST" action="{{ route('storeOrderCart') }}">
                         @csrf
@@ -35,10 +40,13 @@
                    @foreach($product as $cart)
                         <tr>
                             <td>{{ $cart['name'] }}</td>
-                            <td>{{ $cart['capacity'] }}</td>
-                            <td>{{ $cart['price'] }}</td>
-                            <td>{{ $cart['total_price'] }}</td>
-                            <td><a href="/buyer/cart/editcapacity/{{ $cart['id'] }}" class="btn btn-warning btn-sm">Edit Capacity</a> | <a href="/buyer/cart/deletecapacity/{{ $cart['id'] }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete ?')">x</a> </td>
+                            <td>
+                                <input type="number" name="quantity" id="quantity_{{ $cart['id'] }}" value="{{ $cart['capacity'] }}" min="1" style="width: 50px;" max="5" onchange="changeQuantity('{{ $cart['id'] }}')">
+                            </td>
+                            <td>Rp. {{ number_rupiah($cart['price']) }}</td>
+                            <td>Rp. <span id="sub_price_{{ $cart['id'] }}">{{ number_rupiah($cart['total_price']) }}</span></td>
+                            <td>
+                             <a href="/buyer/cart/deletecapacity/{{ $cart['id'] }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete ?')">x</a> </td>
                         </tr>
                    @endforeach
                     @else
@@ -60,7 +68,7 @@
                                  $total += $cart['total_price'];
                                 @endphp
                                 @endforeach
-                                <input type="hidden" name="total_price" value="{{ $total }}">{{ $total }}
+                                <input type="hidden" name="total_price" id="total_price_hidden" value="{{ $total }}">Rp. <span id="total_price">{{ number_rupiah($total) }}</span>
                                 @else
                                 Rp. 0
                                 @endif
@@ -75,4 +83,48 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        function changeQuantity(id)
+        {
+            var quantity = $("#quantity_"+id).val()
+            if(quantity == 0) {
+                alert('Quantity is not 0 or empty')
+                $("#quantity_"+id).val(1)
+            }else {
+                $.ajax({
+                    url: "{{ route('editQuantity') }}",
+                    method: "POST",
+                    data: {
+                        '_token': $("[name=csrf-token]").attr('content'),
+                        'id': id,
+                        'quantity': quantity,
+                    },
+                    dataType: 'json',
+                    success: function (data, status) {
+                        if(data.error) {
+                            alert(data.error)
+                            $("#quantity_"+id).val(data.quantity)
+                        }else {
+                            var totalPrice = 0
+                            $.each(data, function(i, val) {
+                                if(val.id == id) {
+                                    $("#quantity_"+val.id).val(val.capacity)
+                                    $("#sub_price_"+val.id).text(number_rupiah(val.total_price))  
+                                }
+                                totalPrice += val.total_price
+                            });
+                            // console.log(totalPrice)
+                            // $("#total_price").text('');
+                            $("#total_price_hidden").val(totalPrice)
+                            $("#total_price").text(number_rupiah(totalPrice))
+                        }
+                        
+                    },
+                    error: function (data, status) {
+                        console.log(data, status)
+                    }
+                })
+            }
+        }
+    </script>
 @endsection

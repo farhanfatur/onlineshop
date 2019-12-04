@@ -24,7 +24,7 @@
                        <div class="form-group row">
                            <div class="col-md-4">
                                <label for="capacity">Quantity</label>
-                               <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ $product->quantity }}">
+                               <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ $product->quantity }}" min="1">
                                @error('capacity')
                                     <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
