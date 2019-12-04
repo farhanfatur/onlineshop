@@ -32,7 +32,7 @@
                                 @if($data->datereceive == null)
                                     <span class="text-danger">the product is not receive</span>
                                 @else
-                                    <span class="text-success">the product is receive</span>
+                                    <span class="text-success">the product is receive at <b>{{ $data->datereceive }}</b></span>
                                 @endif
                                 </td>
                             <td>{{ $data->buyer->name }}</td>

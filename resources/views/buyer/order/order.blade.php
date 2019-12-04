@@ -76,9 +76,9 @@
                                         <span class="text-success">You have ready the payment</span>
                                     @else
                                         @if($data->status_id == 1)
-                                            <a href="/buyer/order/iscancel/{{ $data->id }}">Yes</a> / <b>No</b>
+                                            <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
                                         @else
-                                            <b>Yes</b> / <a href="/buyer/order/iscancel/{{$data->id}}/return">No</a>
+                                            <b>Yes</b> / <a href="/buyer/order/iscancel/{{$data->id}}/return" onclick="return confirm('Do you want return?')">No</a>
                                         @endif
                                     @endif
                                 @endif
