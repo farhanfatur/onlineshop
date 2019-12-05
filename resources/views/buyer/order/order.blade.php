@@ -71,6 +71,8 @@
                             <td>
                                 @if($data->status_id == 4)
                                     <span class="text-success">Can't cancel because product has been receive payment</span>
+                                @elseif($data->status_id == 5)
+                                    <span class="text-danger">Order has been cancel, can't return back</span>    
                                 @elseif($data->status_id == 6)
                                     <span class="text-danger">Seller is cancel your order</span>
                                 @else
@@ -79,8 +81,6 @@
                                     @else
                                         @if($data->status_id == 1)
                                             <a href="/buyer/order/iscancel/{{ $data->id }}" onclick="return confirm('Do you want cancel?')">Yes</a> / <b>No</b>
-                                        @else
-                                            <b>Yes</b> / <a href="/buyer/order/iscancel/{{$data->id}}/return" onclick="return confirm('Do you want return?')">No</a>
                                         @endif
                                     @endif
                                 @endif

@@ -12,7 +12,7 @@ class ShopController extends Controller
     public function storeCart(Request $request)
     {
         if($request->capacity == null) {
-            return redirect()->back()->with(['stockTooMuch' => 'Cart is not empty']);
+            return redirect()->back()->with(['stockTooMuch' => 'Cart can\'t not empty']);
         }else {
             $product = Product::find($request->id);
             if($request->capacity > $product->quantity) {
@@ -26,6 +26,9 @@ class ShopController extends Controller
                         'price' => $product->price,
                         'total_price' => $product->price * $request->capacity,
                     ]);
+                    $product = Product::find($request->id);
+                    $product->quantity = $product->quantity - $request->capacity;
+                    $product->save();
                 }else {
                     $carts = $request->session()->get('cart');
                     if(!in_array($request->id, array_column($carts, 'id'))) {
@@ -36,13 +39,16 @@ class ShopController extends Controller
                             'price' => $product->price,
                             'total_price' => $product->price * $request->capacity,
                         ]);
+                      $product = Product::find($request->id);
+                      $product->quantity = $product->quantity - $request->capacity;
+                      $product->save();
                     }else {
                         return redirect()->route('indexShop')->with('sessionExist', 'You was add this product before');
                     }
                 }
             }
 
-            return redirect()->route('indexShop')->with(['messageCart' => $product->name." is store to cart"]);
+            return redirect()->route('indexShop')->with(['messageCart' => $product->name." is store to cart with ".$request->capacity." items"]);
         }
     }
 
@@ -78,6 +84,7 @@ class ShopController extends Controller
 
     public function deleteCapacityCart(Request $request, $id)
     {
+        $id;
     	$carts = $request->session()->get('cart');
         if(count($carts) <= 1){
             foreach($carts as $i => $data) {
@@ -86,6 +93,11 @@ class ShopController extends Controller
         }else {
             $id = array_search($request->id, array_column($carts, 'id'));
         }
+        $cart = $request->session()->get('cart.'.$id);
+        $product = Product::find($cart['id']);
+        $product->quantity += intval($cart['capacity']);
+        $product->save();
+        
     	$request->session()->forget('cart.'.$id);
 
     	return redirect()->route('indexCart');
@@ -113,9 +125,6 @@ class ShopController extends Controller
                     'price' => $cart['price'] * $cart['capacity'],
                     'bank_id' => $request->bank_id,
                 ]);
-                $product = Product::find($cart['id']);
-                $product->quantity = $product->quantity - $cart['capacity'];
-                $product->save();
             }
             $request->session()->forget('cart');
             return redirect()->route('indexShop');

@@ -60,13 +60,13 @@
                             </td>
                             <td>
                                 @if($product != null)
-                                @php
-                                    $total = 0;
-                                @endphp
+                                    @php
+                                        $total = 0;
+                                    @endphp
                                 @foreach($product as $i => $cart)
-                                @php
-                                 $total += $cart['total_price'];
-                                @endphp
+                                    @php
+                                     $total += $cart['total_price'];
+                                    @endphp
                                 @endforeach
                                 <input type="hidden" name="total_price" id="total_price_hidden" value="{{ $total }}">Rp. <span id="total_price">{{ number_rupiah($total) }}</span>
                                 @else
