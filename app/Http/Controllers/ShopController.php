@@ -93,7 +93,7 @@ class ShopController extends Controller
 
     public function storeOrderCart(Request $request)
     {
-        if($request->session()->has('cart')) {
+        if($request->session()->get('cart') != [] || $request->session()->get('cart') != null) {
             $now = date('Y-m-d');
             $carts = $request->session()->get('cart');
             $order = auth()->guard('buyer')->user()->order()->create([
@@ -101,7 +101,6 @@ class ShopController extends Controller
                     'code' => 'TK'.rand(100, 999),
                     'status_id' => 1,
                     'address' => $request->address,
-                    'statuscancel_id' => 3,
                     'total_price' => $request->total_price,
                     'datereceive' => null,
                     'imagepayment' => null,

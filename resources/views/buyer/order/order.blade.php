@@ -53,7 +53,7 @@
                                 @endif
                             </td>
                             <td>
-                                @if($data->statuscancel_id == 2 || $data->statuscancel_id == 1)
+                                @if($data->status_id == 6 || $data->status_id == 5)
                                     <span class="text-danger">The order has been canceled</span>
                                 @else
                                     @if($data->status_id >= 3 && $data->status_id < 4)
