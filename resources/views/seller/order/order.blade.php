@@ -10,7 +10,7 @@
                    
                     <table class="table table-bordered">
                         <tr>
-                            <th>No</th>
+                            <th>Code</th>
                             <th>Date Order</th>
                             <th>Date Receive</th>
                             <th>Buyer</th>
@@ -26,7 +26,7 @@
                         @endphp
                         @foreach($order as $data)
                         <tr>
-                            <td>{{ $i++ }}</td>
+                            <td>{{ $data->code }}</td>
                             <td>{{ $data->dateorder }}</td>
                             <td>
                                 @if($data->datereceive == null)
@@ -78,6 +78,8 @@
                                     <span class="text-success">The order is success</span>
                                 @elseif($data->status_id == 3)
                                     <span class="text-success">Wait for order arrived </span>
+                                @elseif($data->status_id == 5)
+                                    <span class="text-danger">Order is cancel by buyer</span>
                                 @else
                                     @if($data->status_id >= 1 && $data->status_id <= 4)
                                     <a href="/seller/order/cancel/active/{{ $data->id }}" onclick="return confirm('Do you want cancel this order?')">Active</a> / <b>Deactive</b>

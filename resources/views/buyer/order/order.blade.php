@@ -70,7 +70,9 @@
                             </td>
                             <td>
                                 @if($data->status_id == 4)
-                                    <span class="text-success">Can't cancel because product has been receive</span>
+                                    <span class="text-success">Can't cancel because product has been receive payment</span>
+                                @elseif($data->status_id == 6)
+                                    <span class="text-danger">Seller is cancel your order</span>
                                 @else
                                     @if($data->imagepayment != "" && $data->status_id >= 2 && $data->status_id <= 4)
                                         <span class="text-success">You have ready the payment</span>

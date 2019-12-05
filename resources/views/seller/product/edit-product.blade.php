@@ -82,7 +82,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-8">
-                                <label for="price">Image</label>
+                                <label for="price"><span class="text-danger">*</span> Image</label>
                                 <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                             </div>
                             @error('image')
@@ -91,6 +91,7 @@
                                 </span>
                             @enderror
                        </div>
+                       <span class="text-danger">* Blank the image if you don't want update it</span><br>
                        <img src="{{ asset('/storage/product/'.$product->image) }}">
                        <div class="form-group row">
                             <div class="col-md-8">

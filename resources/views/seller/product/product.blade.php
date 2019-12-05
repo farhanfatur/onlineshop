@@ -11,7 +11,7 @@
                    
                     <table class="table table-bordered">
                         <tr>
-                            <th>No</th>
+                            <th>Code</th>
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Category</th>
@@ -19,16 +19,14 @@
                             <th>Activation</th>
                             <th>Action</th>
                         </tr>
-                        @php
-                        $i = 1
-                        @endphp
+                       
                         @foreach($product as $data)
                         <tr>
-                            <td>{{ $i++ }}</td>
+                            <td>{{ $data->code }}</td>
                             <td>{{ $data->name }}</td>
                             <td>{{ $data->quantity }}</td>
                             <td>{{ $data->category->name }}</td>
-                            <td>{{ number_rupiah($data->price) }}</td>
+                            <td>Rp. {{ number_rupiah($data->price) }}</td>
                             <td>
                                 @if($data->is_sold == '0')
                                 <a href="/seller/product/active/{{ $data->id }}">Active</a> / <b>Deactive</b>
