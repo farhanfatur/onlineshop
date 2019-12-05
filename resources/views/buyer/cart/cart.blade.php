@@ -51,7 +51,7 @@
                    @endforeach
                     @else
                     <tr>
-                        <td class="5"><span class="text-danger">Order Product is empty</span></td>
+                        <td colspan="5"><span class="text-danger"><center>Order Product is empty</center></span></td>
                     </tr>
                     @endif
                         <tr>
