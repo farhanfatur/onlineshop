@@ -102,6 +102,7 @@
                 <span class="text-danger"><h5 align="center">Product is empty</h5></span>
             </div>
             @endif
+            {{ $product->links() }}
         </div>
         <div class="col-md-3">
             <div class="card">
