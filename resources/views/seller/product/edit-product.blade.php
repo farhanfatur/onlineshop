@@ -92,8 +92,8 @@
                             @enderror
                        </div>
                        <span class="text-danger">* Blank the image if you don't want update it</span><br>
-                       @if($product->image == 'default.png' || $product->image == null && file_exists('/storage/product/'.$data->image))
-                       <img src="{{ asset('image/'.$product->image) }}">
+                       @if(file_exists('/storage/product/'.$product->image) || $product->image == 'default.png' || $product->image == null)
+                       <img src="{{ asset('image/default.png') }}">
                        @else
                        <img src="{{ asset('/storage/product/'.$product->image) }}">
                        @endif
