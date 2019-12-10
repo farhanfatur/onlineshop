@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Edit Product</div>
-
+                <div class="card-header"><i class="fas fa-box"></i> Edit Product</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('updateProduct') }}" enctype="multipart/form-data">
                       @csrf
                       <input type="hidden" name="id" value="{{ $product->id }}">
                        <div class="form-group row">
                            <div class="col-md-8">
-                               <label for="name">Name</label>
+                               <label for="name"><i class="fas fa-user-alt"></i> Name</label>
                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ $product->name }}">
                                @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -23,7 +23,7 @@
                        </div>
                        <div class="form-group row">
                            <div class="col-md-4">
-                               <label for="capacity">Quantity</label>
+                               <label for="capacity"><i class="fas fa-sort-numeric-up-alt"></i> Quantity</label>
                                <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ $product->quantity }}" min="1">
                                @error('capacity')
                                     <span class="invalid-feedback" role="alert">
@@ -32,7 +32,7 @@
                                 @enderror
                            </div>
                            <div class="col-md-4">
-                               <label for="category">Category</label>
+                               <label for="category"><i class="fas fa-archive"></i> Category</label>
                                <select class="form-control @error('category') is-invalid @enderror" name="category">
                                    @foreach($category as $data)
                                      @if($data->id == $data->category_id)
@@ -51,7 +51,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-2">
-                                    <label for="price">Code</label>
+                                    <label for="price"><i class="fas fa-glide-g"></i> Code</label>
                                     <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" value="{{ $product->code }}" maxlength="3">
                                     @error('price')
                                         <span class="invalid-feedback" role="alert">
@@ -60,7 +60,7 @@
                                     @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="price">Price</label>
+                                <label for="price"><i class="fas fa-dollar-sign"></i> Price</label>
                                 <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ $product->price }}">
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -82,7 +82,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-8">
-                                <label for="price"><span class="text-danger">*</span> Image</label>
+                                <label for="price"><span class="text-danger">*</span> <i class="fab fa-image"></i> Image</label>
                                 <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                             </div>
                             @error('image')
@@ -103,4 +103,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

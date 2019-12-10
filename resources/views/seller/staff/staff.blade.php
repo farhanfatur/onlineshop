@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">Staff</div>
 
                 <div class="card-body">
-                    <button class="btn btn-primary" onclick="window.location.href='/seller/staff/add'">+ Add Staff</button>
+                    <button class="btn btn-primary" onclick="window.location.href='/seller/staff/add'"><i class="fas fa-users"></i> Add Staff</button>
                    
                     <table class="table table-bordered">
                         <tr>
@@ -30,7 +31,7 @@
                             <td>{{ $data->address }}</td>
                             <td>{{ $data->phone }}</td>
                             <td>{{ $data->datebirth }}</td>
-                            <td><a href="/seller/staff/edit/{{ $data->id }}">Edit</a> | <a href="/seller/staff/delete/{{ $data->id }}" onclick="return confirm('Are you sure to delete this?')">Delete</a></td>
+                            <td><a href="/seller/staff/edit/{{ $data->id }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a> | <a href="/seller/staff/delete/{{ $data->id }}" onclick="return confirm('Are you sure to delete this?')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a></td>
                         </tr>
                         @endforeach
                     </table>
@@ -38,4 +39,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

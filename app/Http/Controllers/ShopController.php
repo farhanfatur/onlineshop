@@ -11,23 +11,19 @@ class ShopController extends Controller
 {
     public function storeCart(Request $request)
     {
-        if($request->capacity == null) {
-            return redirect()->back()->with(['stockTooMuch' => 'Cart can\'t not empty']);
-        }else {
+       
             $product = Product::find($request->id);
-            if($request->capacity > $product->quantity) {
-                return redirect()->back()->with(['stockTooMuch' => 'your request is too much']);
-            }else {
+            
                 if($request->session()->get('cart') == null) {
                     $request->session()->push('cart', [
                         'id' => $request->id,
                         'name' => $product->name,
-                        'capacity' => $request->capacity,
+                        'capacity' => 1,
                         'price' => $product->price,
-                        'total_price' => $product->price * $request->capacity,
+                        'total_price' => $product->price * 1,
                     ]);
                     $product = Product::find($request->id);
-                    $product->quantity = $product->quantity - $request->capacity;
+                    $product->quantity = $product->quantity - 1;
                     $product->save();
                 }else {
                     $carts = $request->session()->get('cart');
@@ -35,21 +31,21 @@ class ShopController extends Controller
                       $request->session()->push('cart', [
                             'id' => $request->id,
                             'name' => $product->name,
-                            'capacity' => $request->capacity,
+                            'capacity' => 1,
                             'price' => $product->price,
-                            'total_price' => $product->price * $request->capacity,
+                            'total_price' => $product->price * 1,
                         ]);
                       $product = Product::find($request->id);
-                      $product->quantity = $product->quantity - $request->capacity;
+                      $product->quantity = $product->quantity - 1;
                       $product->save();
                     }else {
                         return redirect()->route('indexShop')->with('sessionExist', 'You was add this product before');
                     }
                 }
-            }
+            
 
-            return redirect()->route('indexShop')->with(['messageCart' => $product->name." is store to cart with ".$request->capacity." items"]);
-        }
+            return redirect()->route('indexShop')->with(['messageCart' => $product->name." is store to cart with 1 items"]);
+        
     }
 
     public function indexCart(Request $request)
@@ -106,9 +102,10 @@ class ShopController extends Controller
     public function storeOrderCart(Request $request)
     {
         if($request->session()->get('cart') != [] || $request->session()->get('cart') != null) {
-            $now = date('Y-m-d');
-            $carts = $request->session()->get('cart');
-            $order = auth()->guard('buyer')->user()->order()->create([
+            
+                $now = date('Y-m-d');
+                $carts = $request->session()->get('cart');
+                $order = auth()->guard('buyer')->user()->order()->create([
                     'dateorder' => $now,
                     'code' => 'TK'.rand(100, 999),
                     'status_id' => 1,
@@ -117,17 +114,18 @@ class ShopController extends Controller
                     'datereceive' => null,
                     'imagepayment' => null,
                 ]);
-            foreach($carts as $cart) {
-                $order->orderitem()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $cart['id'],
-                    'quantity' => $cart['capacity'],
-                    'price' => $cart['price'] * $cart['capacity'],
-                    'bank_id' => $request->bank_id,
-                ]);
-            }
-            $request->session()->forget('cart');
-            return redirect()->route('indexShop');
+                foreach($request->check as $i => $check) {
+                    $id = array_search($i, array_column($carts, 'id'));
+                    $order->orderitem()->create([
+                        'order_id' => $order->id,
+                        'product_id' => $carts[$id]['id'],
+                        'quantity' => $carts[$id]['capacity'],
+                        'price' => $carts[$id]['price'] * $carts[$id]['capacity'],
+                        'bank_id' => $request->bank_id,
+                    ]);
+                }
+                $request->session()->forget('cart');
+                return redirect()->route('detailOrder', $order->id);
         }else {
             return redirect()->back()->withErrors(['Order is not empty']);
         }

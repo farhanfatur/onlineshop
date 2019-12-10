@@ -29,6 +29,12 @@ class OrderController extends Controller
     	return redirect()->route('indexOrderBuyer');
     }
     
+    public function detailOrder($id)
+    {
+        $order = Order::find($id);
+        return view('buyer.order.detail', ['orderitem' => $order->orderitem, 'order' => $order, 'code' => $order->code, 'total_price' => $order->total_price]);
+    } 
+
     // public function indexImagePayment($id)
     // {
     //     $order = Order::find($id);
@@ -66,7 +72,7 @@ class OrderController extends Controller
             $product->quantity = $product->quantity + $orderitem->quantity;
             $product->save();
         }
-        return redirect()->route('indexOrderBuyer');
+        return redirect()->route('detailOrder', ['id' => $id]);
     }
 
     public function isCancelReturn($id)

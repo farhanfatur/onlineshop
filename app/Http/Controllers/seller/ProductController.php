@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -38,10 +39,12 @@ class ProductController extends Controller
 			'category' => 'required',
 			'price' => 'required',
 			'description' => 'required',
-			'image' => 'required',
     	]);
+        $image = "default.png";
+    	if($request->image) {
+            $image = $request->name.".png";
+        }
     	
-    	$image = $request->name.".png";
     	$product = auth()->guard('seller')->user()->product()->create([
     		'name' => $request->name,
             'code' => $request->code.rand(100, 999),
@@ -55,7 +58,13 @@ class ProductController extends Controller
 			'is_delete' => '0',
     	]);
     	if($product) {
-    		Storage::putFileAs('public/product/', $request->file('image'), $image);	
+            if($request->image) {
+                Storage::putFileAs('public/product/', $request->file('image'), $image);
+            
+                Image::make(storage_path('app/public/product/'.$image))->resize(320, 240)->save(storage_path('app/public/product/medium/medium_'.$image));
+
+                Image::make(storage_path('app/public/product/'.$image))->resize(160, 120)->save(storage_path('app/public/product/thumbnail/thumbnail_'.$image));
+            }
     		return redirect()->route('indexProduct');
     	}else {
     		return redirect()->back()->withErrors('Data is credential');
@@ -111,6 +120,9 @@ class ProductController extends Controller
 
       		$image = $request->name.".png";
             $file->move(storage_path('app/public/product/'), $image);
+            Image::make(storage_path('app/public/product/'.$image))->resize(320, 240)->save(storage_path('app/public/product/medium/medium_'.$image));
+
+            Image::make(storage_path('app/public/product/'.$image))->resize(160, 120)->save(storage_path('app/public/product/thumbnail/thumbnail_'.$image));
 
             $product->name = $request->name;
     		$product->name_slug = strtolower(str_slug($request->name));

@@ -20,7 +20,7 @@ class OrderController extends Controller
     	$order = Order::findOrFail($id);
     	$order->status_id = 3;
     	$order->save();
-    	return redirect()->route('indexOrderSeller');
+    	return redirect()->route('detailOrderSeller', ['id' => $order->id]);
     }
 
     public function isShippedDeactive($id)
@@ -59,7 +59,7 @@ class OrderController extends Controller
             $product->quantity += $orderitem->quantity;
             $product->save();
         }
-    	return redirect()->route('indexOrderSeller');
+    	return redirect()->route('detailOrderSeller', ['id' => $order->id]);
     }
 
     public function isCancelSellerDeactive($id)
@@ -80,6 +80,12 @@ class OrderController extends Controller
             $product->save();
         }
     	return redirect()->route('indexOrderSeller');
+    }
+
+    public function detailOrderSeller($id)
+    {
+        $order = Order::find($id);
+        return view('seller.order.detail', ['orderitem' => $order->orderitem, 'order' => $order, 'code' => $order->code, 'total_price' => $order->total_price]);
     }
 }
 

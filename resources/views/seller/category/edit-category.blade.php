@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">Edit Category</div>
 
@@ -12,7 +13,7 @@
                         <input type="hidden" name="id" value="{{ $category->id }}">
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <label for="name">Name</label>
+                                <label for="name"><i class="fas fa-archive"></i> Name</label>
                                 <input type="text" name="name" class="form-control" required value="{{ $category->name }}">
                             </div>
                         </div>
@@ -26,4 +27,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

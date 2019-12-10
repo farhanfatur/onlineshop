@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Bank</div>
+                <div class="card-header"><i class="fas fa-university"></i> Bank</div>
 
                 <div class="card-body">
-                    <button class="btn btn-primary" onclick="window.location.href='/seller/bank/add'">+ Add Bank</button>
+                    <button class="btn btn-primary" onclick="window.location.href='/seller/bank/add'"><i class="fas fa-university"></i> Add Bank</button>
                    
                     <table class="table table-bordered">
                         <tr>
@@ -26,7 +27,7 @@
                             <td>{{ $data->name }}</td>
                             <td>{{ $data->rekening }}</td>
                             <td>{{ $data->holder }}</td>
-                            <td><a href="/seller/bank/edit/{{ $data->id }}">Edit</a> | <a href="/seller/bank/delete/{{ $data->id }}" onclick="return confirm('Are you sure to delete this?')">Delete</a></td>
+                            <td><a href="/seller/bank/edit/{{ $data->id }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a> | <a href="/seller/bank/delete/{{ $data->id }}" onclick="return confirm('Are you sure to delete this?')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a></td>
                         </tr>
                         @endforeach
                     </table>
@@ -34,4 +35,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

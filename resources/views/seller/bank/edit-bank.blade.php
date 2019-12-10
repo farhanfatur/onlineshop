@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Add Bank</div>
+                <div class="card-header"><i class="fas fa-university"></i> Edit Bank</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('updateBank') }}">
@@ -12,7 +13,7 @@
                       <input type="hidden" name="id" value="{{ $bank->id }}">
                        <div class="form-group row">
                            <div class="col-md-8">
-                               <label for="name">Name</label>
+                               <label for="name"><i class="fas fa-university"></i> Name</label>
                                <input type="text" name="name" class="form-control" value="{{ $bank->name }}">
                                @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -23,7 +24,7 @@
                        </div>
                        <div class="form-group row">
                            <div class="col-md-8">
-                               <label for="capacity">Rekening</label>
+                               <label for="capacity"><i class="fab fa-cc-mastercard"></i> Rekening</label>
                                <input type="number" name="rekening" class="form-control" value="{{ $bank->rekening }}">
                                @error('rekening')
                                     <span class="invalid-feedback" role="alert">
@@ -34,7 +35,7 @@
                        </div>
                        <div class="form-group row">
                            <div class="col-md-8">
-                               <label for="description">Holder</label>
+                               <label for="description"><i class="fas fa-user"></i> Holder</label>
                                <input type="text" name="holder" class="form-control" value="{{ $bank->holder }}">
                                @error('holder')
                                     <span class="invalid-feedback" role="alert">
@@ -53,4 +54,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

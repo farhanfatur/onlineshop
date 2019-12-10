@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             @foreach($product as $data)
             <div class="card">
                 <div class="card-header"><h4>{{ $data->name }}</h4></div>
@@ -31,7 +31,6 @@
                             <form method="POST" action="{{ route('storeCartBuyer') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $data->id }}">
-                                <input type="number" name="capacity" min="1">
                                 <button class="btn btn-primary" type="submit">Add to Cart</button>
                             </form>
                             @else
@@ -43,7 +42,7 @@
                         </div>
                         @endif
                         <br>
-                    <a href="/" class="btn btn-default"> << Back</a>
+                    <a href="/" class="btn btn-danger"> << Back</a>
                 </div>
             </div>
             @endforeach

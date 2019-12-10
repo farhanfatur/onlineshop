@@ -39,7 +39,9 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapSellerWebRoutes();
+
+        $this->mapBuyerWebRoutes();
     }
 
     /**
@@ -54,6 +56,22 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
+    }
+
+    protected function mapSellerWebRoutes()
+    {
+        Route::middleware('web')
+            ->prefix('seller')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/seller/web.php'));
+    }
+
+    protected function mapBuyerWebRoutes()
+    {
+        Route::middleware('web')
+            ->prefix('buyer')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/buyer/web.php'));
     }
 
     /**
