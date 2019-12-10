@@ -52,6 +52,7 @@ class HomeController extends Controller
     public function getCategory($name)
     {
         $category = $this->categoryByName($name);
+        
         return view('welcome', ['product' => $category->product()->paginate(6), 'category' => $this->categoryAll(), 'searchtext' => null]);
     }
 
