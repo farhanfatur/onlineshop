@@ -44,11 +44,15 @@
         <div class="col-md-9">
             @if(count($product) != 0)
             <div class="row">
-                
+                    
                 @foreach($product as $data)
                 <div class="col-md-4" style="margin-bottom: 5px;">
                     <div class="card">
+                        @if(file_exists('storage/product/thumbnail/thumbnail_'.$data->image) && $data->image != "default.png" && $data->image != "")
                         <img src="{{ asset('storage/product/thumbnail/thumbnail_'.$data->image) }}" onclick="window.location.href='/detail/{{ $data->name_slug }}'" class="card-img-top" style="cursor: pointer;">
+                        @else
+                        <img src="{{ asset('image/thumbnail/thumbnail_default.png') }}" onclick="window.location.href='/detail/{{ $data->name_slug }}'" class="card-img-top" style="cursor: pointer;">
+                        @endif
                         <div class="card-body" style="background-color: #fafafa;">
                             <h3>{{ $data->name }}</h3>
                             <table>

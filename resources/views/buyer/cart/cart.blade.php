@@ -8,6 +8,7 @@
                 <div class="card-header">Cart</div>
 
                 <div class="card-body">
+                    @if($product != null)
                     <h3>Submit Cart</h3>
                     @if($errors->any())
                     <div class="alert alert-danger" role="alert">
@@ -37,7 +38,7 @@
                         <tr>
                             <th></th><th>Product</th><th>Quantity</th><th>Price</th><th>Sub Price</th><th>Action</th>
                         </tr>
-                    @if($product != null)
+                    
                    @foreach($product as $cart)
                         <tr>
                             <td>
@@ -61,22 +62,6 @@
                              <a href="/buyer/cart/deletecapacity/{{ $cart['id'] }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete ?')">x</a> </td>
                         </tr>
                    @endforeach
-                    @else
-                    <tr>
-                        <td colspan="6">
-                            <div class="alert alert-danger">
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <span class="text-danger">Order Product is empty</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <a href="/" class="btn btn-danger">Back to Home</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    @endif
                         <tr>
                             <td colspan="4">
                                 Total Price
@@ -102,6 +87,22 @@
                         </tr>
                     </table>
                     </form>
+                    @else
+                    <tr>
+                        <td colspan="6">
+                            <div class="alert alert-danger">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <span class="text-danger">Order Product is empty</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="/" class="btn btn-danger">Back to Home</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endif
                 </div>
             </div>
         </div>

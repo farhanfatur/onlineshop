@@ -51,7 +51,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-2">
-                                    <label for="price"><i class="fas fa-glide-g"></i> Code</label>
+                                    <label for="price"><i class="fab fa-glide-g"></i> Code</label>
                                     <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" value="{{ old('code') }}" maxlength="3">
                                     @error('price')
                                         <span class="invalid-feedback" role="alert">
@@ -83,7 +83,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-8">
-                                <label for="price"><i class="fab fa-image"></i> Image</label>
+                                <label for="price"><i class="fas fa-image"></i> Image</label>
                                 <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                             </div>
                             @error('image')

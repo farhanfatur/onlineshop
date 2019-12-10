@@ -5,13 +5,18 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             @foreach($product as $data)
+            {{ $data->image }}
             <div class="card">
                 <div class="card-header"><h4>{{ $data->name }}</h4></div>
 
                 <div class="card-body">
                    <div class="row">
                       <div class="col-md-8">
-                          <img src="{{ asset('storage/product/'.$data->image) }}">
+                        @if($data->image != "" && file_exists('storage/product/'.$data->image))
+                        <img src="{{ asset('storage/product/'.$data->image) }}">
+                        @else
+                        <img src="{{ asset('image/default.png') }}">
+                        @endif
                       </div> 
                    </div>
                    <div class="row">

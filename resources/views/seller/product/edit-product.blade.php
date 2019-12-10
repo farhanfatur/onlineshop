@@ -51,7 +51,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-2">
-                                    <label for="price"><i class="fas fa-glide-g"></i> Code</label>
+                                    <label for="price"><i class="fab fa-glide-g"></i> Code</label>
                                     <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" value="{{ $product->code }}" maxlength="3">
                                     @error('price')
                                         <span class="invalid-feedback" role="alert">
@@ -82,7 +82,7 @@
                        </div>
                        <div class="form-group row">
                             <div class="col-md-8">
-                                <label for="price"><span class="text-danger">*</span> <i class="fab fa-image"></i> Image</label>
+                                <label for="price"><span class="text-danger">*</span> <i class="fas fa-image"></i> Image</label>
                                 <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                             </div>
                             @error('image')
@@ -92,7 +92,11 @@
                             @enderror
                        </div>
                        <span class="text-danger">* Blank the image if you don't want update it</span><br>
+                       @if($product->image == 'default.png' || $product->image == null && file_exists('/storage/product/'.$data->image))
+                       <img src="{{ asset('image/'.$product->image) }}">
+                       @else
                        <img src="{{ asset('/storage/product/'.$product->image) }}">
+                       @endif
                        <div class="form-group row">
                             <div class="col-md-8">
                                 <input type="submit" name="store" class="btn btn-success">

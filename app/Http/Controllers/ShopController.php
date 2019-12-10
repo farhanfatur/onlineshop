@@ -127,7 +127,7 @@ class ShopController extends Controller
                 $request->session()->forget('cart');
                 return redirect()->route('detailOrder', $order->id);
         }else {
-            return redirect()->back()->withErrors(['Order is not empty']);
+            return redirect()->back()->withErrors(['Order can\'t empty !!!']);
         }
     }
 
