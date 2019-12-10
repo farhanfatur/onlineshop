@@ -17,7 +17,11 @@
                 @foreach($orderitem as $data)
                 <tr style="background-color: #fff;">
                     <td width="60">
+                        @if(file_exists('storage/product/thumbnail/thumbnail_'.$data->product->image) && $data->product->image != "default.png" && $data->product->image != "")
                         <img src="{{ asset('storage/product/thumbnail/thumbnail_'.$data->product->image) }}">
+                        @else
+                        <img src="{{ asset('image/thumbnail/thumbnail_default.png') }}">
+                        @endif
                     </td>
                     <td>
                         <span style="font-size: 16px;">{{ $data->product->name }}</span>

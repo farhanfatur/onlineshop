@@ -17,7 +17,11 @@
                 @foreach($orderitem as $data)
                 <tr style="background-color: #fff;">
                     <td width="60">
-                        <img src="{{ asset('storage/product/thumbnail/thumbnail_'.$data->product->image) }}">
+                         @if(file_exists('storage/product/thumbnail/thumbnail_'.$data->product->image) && $data->product->image != "default.png" && $data->product->image != "")
+                                <img src="{{ asset('storage/product/thumbnail/thumbnail_'.$data->product->image) }}">
+                            @else
+                                <img src="{{ asset('image/thumbnail/thumbnail_default.png') }}">
+                            @endif
                     </td>
                     <td>
                         <span style="font-size: 16px;">{{ $data->product->name }}</span>
@@ -52,7 +56,7 @@
                         <span class="text-danger">The payment is send, please wait for confirmation</span>
                     </div>
                     @elseif($order->status_id == 3)
-                    <div class="alert alert-warning text-center">
+                    <div class="alert alert-warning text-center" role="alert">
                         <span class="text-warning">Payment has been confirm by seller, is the product received ?<br>
                             <a href="/buyer/order/isreceive/{{ $order->id }}" onclick="return confirm('Are you sure?')">Yes</a> / <b>No</b></span>
                     </div>

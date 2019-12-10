@@ -20,6 +20,7 @@
                             <th>Product</th>
                             <th>Total Price</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>                     
                         @php
                         $i = 1;
@@ -36,6 +37,9 @@
                             </td>
                             <td>
                                 Rp.{{ number_rupiah($data->total_price) }}
+                            </td>
+                            <td>
+                                <h5><span class="badge badge-secondary badge-xl">ads</span></h5>
                             </td>
                             <td>
                                 <a href="/buyer/order/detail/{{ $data->id }}" class="btn btn-warning">Status</a>
