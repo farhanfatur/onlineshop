@@ -34,7 +34,7 @@ class HomeController extends Controller
 
     public function detailProduct($nameslug)
     {
-        $product = Product::where('name_slug', $nameslug)->get();
+        $product = Product::where('name_slug', $nameslug)->paginate(6);
         return view('detail', ['product' => $product]);
     }
 
@@ -42,9 +42,9 @@ class HomeController extends Controller
     {
         $product;
         if($request->searchtext == null) {
-            $product = Product::all();
+            $product = Product::paginate(6);
         }else {
-            $product = Product::where('name', 'like', '%'.$request->searchtext.'%')->get();
+            $product = Product::where('name', 'like', '%'.$request->searchtext.'%')->paginate(6);
         }
         return view('welcome', ['product' => $product, 'category' => $this->categoryAll(), 'searchtext' => $request->searchtext]);
     }
@@ -52,7 +52,7 @@ class HomeController extends Controller
     public function getCategory($name)
     {
         $category = $this->categoryByName($name);
-        return view('welcome', ['product' => $category->product, 'category' => $this->categoryAll(), 'searchtext' => null]);
+        return view('welcome', ['product' => $category->product()->paginate(6), 'category' => $this->categoryAll(), 'searchtext' => null]);
     }
 
     public function logoutBuyer()
