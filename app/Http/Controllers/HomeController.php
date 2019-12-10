@@ -22,7 +22,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         
-        $product = Product::where('is_delete', '0')->where('is_sold', '1')->paginate(9);
+        $product = Product::where('is_delete', '0')->where('is_sold', '1')->paginate(6);
         return view('welcome', ['product' => $product, 'category' => $this->categoryAll(), 'searchtext' => null]);
     }
 
