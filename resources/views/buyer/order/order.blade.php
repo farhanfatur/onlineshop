@@ -39,7 +39,20 @@
                                 Rp.{{ number_rupiah($data->total_price) }}
                             </td>
                             <td>
-                                <h5><span class="badge badge-secondary badge-xl">ads</span></h5>
+                                @if($data->status_id == 1)
+                                <h5><span class="badge badge-danger badge-xl">Unpaid</span></h5>
+                                @elseif($data->status_id == 2 && $data->imagepayment != null)
+                                <h5><span class="badge badge-success badge-xl">Paid</span></h5>
+                                @elseif($data->status_id == 3)
+                                <h5><span class="badge badge-success badge-xl">Send by seller</span></h5>
+                                @elseif($data->status_id == 4)
+                                <h5><span class="badge badge-success badge-xl">Receive</span></h5>
+                                @elseif($data->status_id == 5)
+                                <h5><span class="badge badge-danger badge-xl">Cancel by buyer</span></h5>
+                                @elseif($data->status_id == 6)
+                                <h5><span class="badge badge-danger badge-xl">Cancel by seller</span></h5>
+                                @endif
+                                
                             </td>
                             <td>
                                 <a href="/buyer/order/detail/{{ $data->id }}" class="btn btn-warning">Status</a>
