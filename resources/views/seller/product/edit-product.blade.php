@@ -35,7 +35,7 @@
                                <label for="category"><i class="fas fa-archive"></i> Category</label>
                                <select class="form-control @error('category') is-invalid @enderror" name="category">
                                    @foreach($category as $data)
-                                     @if($data->id == $data->category_id)
+                                     @if($data->id == $product->category_id)
                                       <option value="{{ $data->id }}" selected>{{ $data->name }}</option>
                                      @else
                                       <option value="{{ $data->id }}">{{ $data->name }}</option>
