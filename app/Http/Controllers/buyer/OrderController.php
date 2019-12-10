@@ -26,7 +26,7 @@ class OrderController extends Controller
         $order->status_id = 2;
         $order->save();
 
-    	return redirect()->route('indexOrderBuyer');
+    	return redirect()->route('detailOrder', ['id' => $order->id]);
     }
     
     public function detailOrder($id)

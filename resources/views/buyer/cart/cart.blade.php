@@ -93,7 +93,7 @@
                             <div class="alert alert-danger">
                                 <div class="row">
                                     <div class="col-md-9">
-                                        <span class="text-danger">Order Product is empty</span>
+                                        <span class="text-danger">Order Product can't empty</span>
                                     </div>
                                     <div class="col-md-3">
                                         <a href="/" class="btn btn-danger">Back to Home</a>

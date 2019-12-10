@@ -46,7 +46,7 @@
                     <h3 class="text-center"><i class="fas fa-info-circle"></i> Status: </h3>
                     @if($order->status_id == 1)
                     <h3 class="text-center">Upload Proof of Payment</h3>
-                    <center><button class="btn btn-primary"  data-toggle="modal" data-target="#orderImage" onclick="showModal('{{ $order->imagepayment }}')">Upload</button></center>
+                    <center><button class="btn btn-primary"  data-toggle="modal" data-target="#orderImage" onclick="orderImage('{{ $order->id }}')">Upload</button></center>
                     @elseif($order->status_id == 2 && $order->imagepayment != null)
                     <div class="alert alert-danger text-center">
                         <span class="text-danger">The payment is send, please wait for confirmation</span>
@@ -106,7 +106,7 @@
             </div>
         </div>
         <script type="text/javascript">
-            function showModal(id) {
+            function orderImage(id) {
                 $("#id").val(id);
             }
         </script>

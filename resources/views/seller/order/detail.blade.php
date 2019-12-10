@@ -61,7 +61,7 @@
                     @elseif($order->status_id == 2 && $order->imagepayment != null)
 
                     <center><button class="btn btn-primary"  data-toggle="modal" data-target="#paymentImage" onclick="showModal('{{ $order->imagepayment }}')">Show Payment</button></center>
-                    <div class="alert alert-warning text-center">
+                    <div class="alert alert-warning text-center" role="alert">
                         <i class="fas fa-question-circle" style="font-size: 18px;"></i><br>
                         <span class="text-warning">The buyer has been payment, do you want confirm ?<br>
                             <a href="/seller/order/shipped/active/{{ $order->id }}" onclick="return confirm('Are you sure?')">Yes</a> / <b>No</b>
@@ -117,7 +117,7 @@
                             <h5 class="modal-title" id="exampleModalLabel">Image Payment</h5>
                         </div>
                         <div class="modal-body">
-                            <img id="imagepayment">
+                            <img id="imagepayment" class="card-img">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

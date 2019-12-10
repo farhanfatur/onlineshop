@@ -5,7 +5,6 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             @foreach($product as $data)
-            {{ $data->image }}
             <div class="card">
                 <div class="card-header"><h4>{{ $data->name }}</h4></div>
 
@@ -36,7 +35,7 @@
                             <form method="POST" action="{{ route('storeCartBuyer') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $data->id }}">
-                                <button class="btn btn-primary" type="submit">Add to Cart</button>
+                                <button class="btn btn-primary" type="submit">Add to Cart <i class="fas fa-cart-plus"></i></button>
                             </form>
                             @else
                                 <span class="text-danger">Product is empty</span>
