@@ -3,14 +3,22 @@
 namespace App\Http\Controllers\seller;
 
 use App\Model\Bank;
+use App\Repositories\Contract\BankInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class BankController extends Controller
 {
+    private $model;
+
+    public function __construct(BankInterface $bank)
+    {
+        $this->model = $bank;
+    }
+
     public function index()
     {
-    	$bank = Bank::all();
+    	$bank = $this->model->index();
     	return view('seller.bank.bank', ['bank' => $bank]);
     }
 
@@ -22,18 +30,14 @@ class BankController extends Controller
 			'holder' => 'required',
     	]);
 
-    	auth()->guard('seller')->user()->bank()->create([
-    		'name' => $request->name,
-    		'rekening' => $request->rekening,
-			'holder' => $request->holder,
-    	]);	
+    	$this->model->store($request);
 
     	return redirect()->route('indexBank');
     }
 
     public function edit($id)
     {
-    	$bank = Bank::find($id);
+    	$bank = $this->model->edit($id);
     	return view('seller.bank.edit-bank', ['bank' => $bank]);
     }
 
@@ -45,18 +49,14 @@ class BankController extends Controller
 			'holder' => 'required',
     	]);
 
-    	Bank::find($request->id)->update([
-    		'name' => $request->name,
-    		'rekening' => $request->rekening,
-			'holder' => $request->holder,
-    	]);
+    	$this->model->update($request);
 
     	return redirect()->route('indexBank');
     }
 
     public function delete($id)
     {
-    	Bank::find($id)->delete();
+    	$this->model->delete($id);
 
     	return redirect()->route('indexBank');
     }

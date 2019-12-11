@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\seller;
 
-use App\Model\Seller;
-use Illuminate\Support\Facades\Hash;
+use App\Repositories\Contract\StaffInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class StaffController extends Controller
 {
+    private $model;
+
+    public function __construct(StaffInterface $staff)
+    {
+        $this->model = $staff;
+    }
+
 	public function index()
 	{
-		$staff = auth()->guard('seller')->user()->where('type_seller', 'staff')->get();
+		$staff = $this->model->index();
 		return view('seller.staff.staff', ['staff' => $staff]);
 	}
 
@@ -26,15 +32,7 @@ class StaffController extends Controller
             'datebirth' => 'required|date',
     	]);
 
-    	$seller = Seller::create([
-  			'name' => $request->name,
-  			'email' => $request->email,
-  			'password' => Hash::make($request->password),
-  			'address' => $request->address,
-  			'phone' => $request->phone,
-  			'datebirth' => $request->datebirth,
-        	'type_seller' => 'staff',	
-    	]);
+    	$seller = $this->model->store($request);
 
     	if($seller) {
     		return redirect()->route('indexStaff');
@@ -43,7 +41,7 @@ class StaffController extends Controller
 
     public function edit($id)
     {
-    	$staff = Seller::find($id);
+    	$staff = $this->model->edit($id);
     	return view('seller.staff.edit-staff', ['staff' => $staff]);
     }
 
@@ -56,28 +54,7 @@ class StaffController extends Controller
             'phone' => 'required',
             'datebirth' => 'required|date',
     	]);
-    	$seller;
-    	if($request->password != "" || $request->confirmation_password != "") {
-            $this->validate($request, [
-                'password' => 'required|string|min:8|confirmed',
-            ]);
-    		$seller = Seller::find($request->id)->update([
-	  			'name' => $request->name,
-	  			'email' => $request->email,
-	  			'password' => Hash::make($request->password),
-	  			'address' => $request->address,
-	  			'phone' => $request->phone,
-	  			'datebirth' => $request->datebirth,
-	    	]);
-    	}else {
-    		$seller = Seller::find($request->id)->update([
-	  			'name' => $request->name,
-	  			'email' => $request->email,
-	  			'address' => $request->address,
-	  			'phone' => $request->phone,
-	  			'datebirth' => $request->datebirth,
-	    	]);
-    	}
+    	$seller = $this->model->update($request);
 
     	if($seller) {
     		return redirect()->route('indexStaff');
@@ -86,7 +63,7 @@ class StaffController extends Controller
 
     public function delete($id)
     {
-    	Seller::find($id)->delete();
+    	$this->model->delete($id);
     	return redirect()->route('indexStaff');
     }
 }

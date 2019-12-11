@@ -23,9 +23,7 @@ class AuthController extends Controller
     			
     			return redirect()->back()->withErrors(['Account is not active, please do it first']);	
     			Auth::guard('seller')->logout();
-    		}else if(auth()->guard('seller')->user()->email_verified_at == null && auth()->guard('seller')->user()->type_seller == 'staff') {
-          return redirect('/');
-        }else {
+    		}else {
     			return redirect('/');
     		}
     	}else {

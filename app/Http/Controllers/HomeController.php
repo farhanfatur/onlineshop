@@ -4,37 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Model\Product;
 use App\Model\Category;
+use App\Repositories\Contract\ProductInterface;
+use App\Repositories\Contract\CategoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    private $product;
+    private $category;
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    public function __construct(ProductInterface $product, CategoryInterface $category)
+    {
+        $this->product = $product;
+        $this->category = $category;
+    }
+
     public function index(Request $request)
     {
         
-        $product = Product::where('is_delete', '0')->where('is_sold', '1')->paginate(6);
-        return view('welcome', ['product' => $product, 'category' => $this->categoryAll(), 'searchtext' => null]);
-    }
-
-    public function logoutSeller()
-    {
-        Auth::guard('seller')->logout();
-        return redirect()->route('indexShop');
+        $product = $this->product->showProduct('0', '1', 6);
+        return view('welcome', ['product' => $product, 'category' => $this->category->index(), 'searchtext' => null]);
     }
 
     public function detailProduct($nameslug)
     {
-        $product = Product::where('name_slug', $nameslug)->paginate(6);
+        $product = $this->product->showByParam('name_slug', $nameslug, 6);
         return view('detail', ['product' => $product]);
     }
 
@@ -42,18 +36,23 @@ class HomeController extends Controller
     {
         $product;
         if($request->searchtext == null) {
-            $product = Product::paginate(6);
+            $product = $this->product->showProduct('0', '1', 6);
         }else {
-            $product = Product::where('name', 'like', '%'.$request->searchtext.'%')->paginate(6);
+            $product = $this->product->showByParam('name', '%'.$request->searchtext.'%', 'like', 6);
         }
-        return view('welcome', ['product' => $product, 'category' => $this->categoryAll(), 'searchtext' => $request->searchtext]);
+        return view('welcome', ['product' => $product, 'category' => $this->category->index(), 'searchtext' => $request->searchtext]);
     }
 
     public function getCategory($name)
     {
-        $category = $this->categoryByName($name);
-        
-        return view('welcome', ['product' => $category->product()->paginate(6), 'category' => $this->categoryAll(), 'searchtext' => null]);
+        $category = $this->category->findByParamFirst('name', $name);
+        return view('welcome', ['product' => $category->product()->paginate(6), 'category' => $this->category->index(), 'searchtext' => null]);
+    }
+
+    public function logoutSeller()
+    {
+        Auth::guard('seller')->logout();
+        return redirect()->route('indexShop');
     }
 
     public function logoutBuyer()

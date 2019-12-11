@@ -4,29 +4,33 @@ namespace App\Http\Controllers\seller;
 
 use App\Model\Category;
 use App\Model\Product;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\Facades\Image;
+use App\Events\EventUploadImage;
+use App\Repositories\Contract\ProductInterface;
+use App\Repositories\Contract\CategoryInterface;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    private $model;
+    private $category;
+
+    public function __construct(ProductInterface $product, CategoryInterface $category)
+    {
+        $this->model = $product;
+        $this->category = $category;
+    }
+
     public function index() 
     {
-        $product;
-        if(auth()->guard('seller')->user()->type_seller == 'admin'){
-    	   $product = Product::where('is_delete', '0')->get();
-        }else {
-            $product = auth()->guard('seller')->user()->product()->where('is_delete', '0')->get();
-        }
+        $product = $this->model->index();
 
     	return view('seller.product.product', ['product' => $product]);
     }
 
     public function add()
     {
-    	$category = Category::all();
+    	$category = $this->category->index();
     	return view('seller.product.add-product', ['category' => $category]);
     }
 
@@ -45,25 +49,11 @@ class ProductController extends Controller
             $image = $request->name.".png";
         }
     	
-    	$product = auth()->guard('seller')->user()->product()->create([
-    		'name' => $request->name,
-            'code' => $request->code.rand(100, 999),
-    		'name_slug' => strtolower(str_slug($request->name)),
-			'quantity' => $request->quantity,
-			'category_id' => $request->category,
-			'price' => $request->price,
-			'description' => $request->description,
-			'image' => $image,
-			'is_sold' => '0',
-			'is_delete' => '0',
-    	]);
+        $product = $this->model->store($image, $request);
     	if($product) {
             if($request->image) {
-                Storage::putFileAs('public/product/', $request->file('image'), $image);
-            
-                Image::make(storage_path('app/public/product/'.$image))->resize(320, 240)->save(storage_path('app/public/product/medium/medium_'.$image));
-
-                Image::make(storage_path('app/public/product/'.$image))->resize(160, 120)->save(storage_path('app/public/product/thumbnail/thumbnail_'.$image));
+                $file = $request->file('image');
+                event(new EventUploadImage($file, $image));
             }
     		return redirect()->route('indexProduct');
     	}else {
@@ -73,9 +63,7 @@ class ProductController extends Controller
 
     public function active($id)
     {
-    	$product = Product::find($id)->update([
-    		'is_sold' => '1',
-    	]);
+    	$product = $this->model->active($id);
     	if($product) {
     		return redirect()->route('indexProduct');
     	}else {
@@ -85,9 +73,7 @@ class ProductController extends Controller
 
     public function deactive($id)
     {
-    	$product = Product::find($id)->update([
-    		'is_sold' => '0',
-    	]);
+    	$product = $this->model->deactive($id);
     	if($product) {
     		return redirect()->route('indexProduct');
     	}else {
@@ -97,8 +83,8 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-    	$product = Product::find($id);
-    	$category = Category::all();
+    	$product = $this->model->edit($id);
+    	$category = $this->category->index();
     	return view('seller.product.edit-product', ['product' => $product, 'category' => $category]);
     }
 
@@ -113,52 +99,15 @@ class ProductController extends Controller
 			'description' => 'required',
     	]);
 
-    	$product = Product::find($request->id);
-        $image = $request->name.".png";
-    	if($request->image) {
-            $file = $request->file('image');
-
-      		$image = $request->name.".png";
-            $file->move(storage_path('app/public/product/'), $image);
-            Image::make(storage_path('app/public/product/'.$image))->resize(320, 240)->save(storage_path('app/public/product/medium/medium_'.$image));
-
-            Image::make(storage_path('app/public/product/'.$image))->resize(160, 120)->save(storage_path('app/public/product/thumbnail/thumbnail_'.$image));
-
-            $product->name = $request->name;
-    		$product->name_slug = strtolower(str_slug($request->name));
-            if($request->code != $product->code) {
-                $product->code = $request->code.rand(100, 999);
-            }
-			$product->quantity = $request->quantity;
-			$product->category_id = $request->category;
-			$product->price = $request->price;
-            $product->image = $image;
-			$product->description = $request->description;
-			$product->save();
-
-			
-
-    	}else {
-    		$product->name = $request->name;
-    		$product->name_slug = strtolower(str_slug($request->name));
-            if($request->code != $product->code) {
-                $product->code = $request->code.rand(100, 999);
-            }
-			$product->quantity = $request->quantity;
-			$product->category_id = $request->category;
-			$product->price = $request->price;
-			$product->description = $request->description;
-			$product->save();
-			
-    	}
-        return redirect()->route('indexProduct');
+        $product = $this->model->update($request);
+        if($product) {
+            return redirect()->route('indexProduct');    
+        }
     }
 
     public function delete($id)
     {
-    	$product = Product::find($id);
-    	$product->is_delete = '1';
-        $product->save();
+    	$this->model->delete($id);
         
     	return redirect()->route('indexProduct');
     }

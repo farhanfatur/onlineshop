@@ -5,19 +5,30 @@ namespace App\Http\Controllers\seller;
 use App\Model\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Events\EventUploadImage;
+use App\Repositories\Contract\CategoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
+    private $category;
+
+    public function __construct(CategoryInterface $category)
+    {
+        $this->category = $category;
+    }
+
 	public function index()
 	{
-		$category = Category::all();
+		$category = $this->category->index();
+
 		return view('seller.category.category', ['category' => $category]);
 	}
 
 
 	public function edit($id)
 	{
-		$category = Category::find($id);
+		$category = $this->category->edit($id);
 		
 		return view('seller.category.edit-category', ['category' => $category]);
 	}
@@ -26,12 +37,8 @@ class CategoryController extends Controller
     {
     	$this->validate($request, [
     		'name' => 'required|string',
-    		
     	]);
-    	Category::create([
-    		'name' => $request->name,
-    		
-    	]);
+    	$this->category->store($request);
 
     	return redirect()->route('categoryIndex');
     }
@@ -42,18 +49,14 @@ class CategoryController extends Controller
     		'name' => 'required|string',
     		
     	]);
-    	Category::find($request->id)->update([
-    		'name' => $request->name,
-    		
-    	]);
+    	$this->category->update($request);
 
     	return redirect()->route('categoryIndex');
     }
 
     public function delete($id)
     {
-    	$category = Category::find($id);
-    	$category->delete();
+    	$this->category->delete($id);
 
     	return redirect()->route('categoryIndex');
     }
