@@ -31,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind('App\Repositories\Contract\OrderBuyerInterface', 
                 'App\Repositories\OrderBuyerRepositories');
+
+        $this->app->bind('App\Repositories\Contract\ProvinceInterface',
+                'App\Repositories\ProvinceRepositories');
+
+        $this->app->bind('App\Repositories\Contract\CityInterface',
+                'App\Repositories\CityRepositories');
     }
 
     /**

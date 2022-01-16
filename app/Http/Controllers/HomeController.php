@@ -34,7 +34,7 @@ class HomeController extends Controller
 
     public function searchProduct(Request $request)
     {
-        $product;
+        $product = [];
         if($request->searchtext == null) {
             $product = $this->product->showProduct('0', '1', 6);
         }else {
@@ -46,7 +46,9 @@ class HomeController extends Controller
     public function getCategory($name)
     {
         $category = $this->category->findByParamFirst('name', $name);
-        return view('welcome', ['product' => $category->product()->paginate(6), 'category' => $this->category->index(), 'searchtext' => null]);
+        $product = $this->category->findCategoryProduct($category);
+
+        return view('welcome', ['product' => $product->paginate(6), 'category' => $this->category->index(), 'searchtext' => null]);
     }
 
     public function logoutSeller()

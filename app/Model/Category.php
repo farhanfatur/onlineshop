@@ -12,4 +12,9 @@ class Category extends Model
    	{
    		return $this->hasMany('App\Model\Product');
    	}
+
+	public function productNotDelete()
+	{
+		return $this->hasMany('App\Model\Product')->where('is_delete', '0');
+	}
 }

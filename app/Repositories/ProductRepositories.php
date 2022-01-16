@@ -56,7 +56,7 @@ class ProductRepositories implements ProductInterface
 
 	public function showByParam($param, $val, $operator = "=", $paginate = 3)
 	{
-		$product = Product::where($param, $operator, $val)->paginate($paginate);
+		$product = Product::where($param, $operator, $val)->where('is_delete', '0')->paginate($paginate);
 		return $product;
 	}
 
