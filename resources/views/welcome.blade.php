@@ -112,7 +112,7 @@
                     @foreach($category as $data)
                       <li class="list-group-item d-flex justify-content-between align-items-center">
                         <a href="/category/{{ $data->name }}">{{ $data->name }}</a>
-                        <span class="badge badge-primary badge-pill">{{ count($data->product) }}</span>
+                        <span class="badge badge-primary badge-pill">{{ count($data->productNotDelete) }}</span>
                       </li>
                     @endforeach
                     </ul>

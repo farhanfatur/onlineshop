@@ -37,18 +37,6 @@ class CategoryRepositories implements CategoryInterface
 		return $category;
 	}
 
-	public function findByParamFirst($param, $val)
-	{
-		$category = $this->model::where($param, $val)->first();
-		return $category;
-	}
-
-	public function findByParamGet($param, $val)
-	{
-		$category = $this->model::where($param, $val)->get();
-		return $category;
-	}
-
 	public function update($request)
 	{
 		$category = $this->model::find($request->id)->update([
@@ -65,4 +53,23 @@ class CategoryRepositories implements CategoryInterface
 
 		return $category;
 	}
+
+	public function findByParamFirst($param, $val)
+	{
+		$category = $this->model::where($param, $val)->first();
+		return $category;
+	}
+
+	public function findCategoryProduct($category)
+	{
+		$product = $category->product()->where("is_delete", "0");
+		return $product;
+	}
+
+	public function findByParamGet($param, $val)
+	{
+		$category = $this->model::where($param, $val)->get();
+		return $category;
+	}
+
 }

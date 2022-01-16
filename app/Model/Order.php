@@ -19,9 +19,19 @@ class Order extends Model
     	return $this->belongsTo('App\Model\Buyer');
     }
 
-   public function status()
-   {
-      return $this->belongsTo('App\Model\Status');
-   }
+    public function status()
+    {
+        return $this->belongsTo('App\Model\Status');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo('App\Model\Province');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo('App\Model\City');
+    }
 
 }

@@ -47,7 +47,7 @@ class StaffRepositories implements StaffInterface
 
 	public function update($request)
 	{
-		$seller;
+		$seller = null;
     	if($request->password != "" || $request->confirmation_password != "") {
             $this->validate($request, [
                 'password' => 'required|string|min:8|confirmed',
