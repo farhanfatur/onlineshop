@@ -5,17 +5,29 @@ namespace App\Http\Controllers;
 use App\Model\Order;
 use App\Model\Bank;
 use App\Model\Product;
+use App\Repositories\Contract\BankInterface;
 use App\Repositories\Contract\CartInterface;
+use App\Repositories\Contract\ProvinceInterface;
+use App\Repositories\Contract\CityInterface;
+use App\Repositories\Contract\CourierInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class ShopController extends Controller
 {
-    private $cart;
+    private $cart, $bank, $province, $city, $courier;
 
-    public function __construct(CartInterface $cart)
+    public function __construct(CartInterface $cart, 
+                    BankInterface $bank, 
+                    ProvinceInterface $province,
+                    CityInterface $city,
+                    CourierInterface $courier)
     {
         $this->cart = $cart;
+        $this->bank = $bank;
+        $this->province = $province;
+        $this->city = $city;
+        $this->courier = $courier;
     }
 
     public function storeCart(Request $request)
@@ -28,8 +40,24 @@ class ShopController extends Controller
     public function indexCart(Request $request)
     {
     	$cart = $this->cart->index($request);
-        return view('buyer.cart.cart', $cart);
-       
+        $province = $this->province->index();
+        $bank = $this->bank->index();
+        $courier = $this->courier->index();
+        // $city = $this->city->index();
+        return view('buyer.cart.cart', [
+            'product' => $cart, 
+            'bank' => $bank, 
+            'province' => $province, 
+            'courier' => $courier
+            // 'city' => $city
+        ]);
+    }
+
+    public function getProvinceCart($id)
+    {
+        $city = $this->city->getProvince($id);
+        
+        return $city;
     }
 
     public function editCapacityCart($id)
@@ -37,6 +65,18 @@ class ShopController extends Controller
     	return view('buyer.cart.edit-capacity-cart', ['id' => $id]);
     }
 
+    public function getOngkir(Request $request)
+    {
+        $findId = $this->courier->find($request->courier);
+        $weight = 0;
+        $carts = $request->session()->get('cart');
+        foreach($carts as $cart) {
+            $weight += $cart["weight"];
+        }
+        $ongkir = $this->courier->getOngkir($request->destination, $weight, strtolower($findId->name));
+
+        return response()->json($ongkir->rajaongkir->results);
+    }
 
     public function deleteCapacityCart(Request $request, $id)
     {

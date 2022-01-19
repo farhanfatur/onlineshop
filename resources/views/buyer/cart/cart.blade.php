@@ -19,27 +19,77 @@
                     <form method="POST" action="{{ route('storeOrderCart') }}">
                         @csrf
                     <div class="form-group row">
-                        <div class="col-md-5">
-                            <label for="bank">Bank</label>
-                            <select name="bank_id" class="form-control">
-                                @foreach($bank as $data)
+                        <div class="col-md-6">
+                            <label for="province">Province</label>
+                            <select name="province_id" id="province_id" class="form-control" onchange="selectCity(this.value)">
+                                <option value="">--- Province ---</option>
+                                @foreach($province as $data)
                                 <option value="{{ $data->id }}">{{ $data->name }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-6">
+                            <label for="city">City</label>
+                            <select name="city_id" id="city_id" class="form-control" onchange="getOngkir(this.value, 'city')" disabled>
+                                <option value="">--- City ---</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group row">
+                        <div class="col-md-4">
+                            <label for="bank">Bank</label>
+                            <select name="bank_id" id="bank_id" class="form-control" {{count($bank) > 0 ? '' : 'disabled'}} >
+                                @if(count($bank) > 0)
+                                    @foreach($bank as $data)
+                                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="">--- No Bank ---</option>
+                                @endif
+                            </select>
+                        </div>
                         <div class="col-md-5">
                             <label for="address">Address Destination</label>
                             <input type="text" name="address" class="form-control" required>
                         </div>
+                        <div class="col-md-3">
+                            <label for="bank">Courier</label>
+                            <select name="courier_id" id="courier_id" class="form-control" onchange="getOngkir(this.value, 'courier')" {{count($courier) > 0 ? '' : 'disabled'}} >
+                                @if(count($courier) > 0)
+                                    <option value="">--- Courier ---</option>
+                                    @foreach($courier as $data)
+                                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="">--- No Courier ---</option>
+                                @endif
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Ongkir table -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Ongkir</h4>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered">
+
+                            </table>
+                        </div>
                     </div>
                     <table class="table table-bordered">
                         <tr>
-                            <th></th><th>Product</th><th>Quantity</th><th>Price</th><th>Sub Price</th><th>Action</th>
+                            <th></th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Sub Price</th>
+                            <th>Action</th>
                         </tr>
-                    
-                   @foreach($product as $cart)
+                        @foreach($product as $cart)
                         <tr>
                             <td>
                                 <input type="checkbox" name="check[{{ $cart['id'] }}]" id="check_{{ $cart['id'] }}" 
@@ -61,7 +111,7 @@
                             <td>
                              <a href="/buyer/cart/deletecapacity/{{ $cart['id'] }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete ?')">x</a> </td>
                         </tr>
-                   @endforeach
+                        @endforeach
                         <tr>
                             <td colspan="4">
                                 Total Price
@@ -110,6 +160,72 @@
 </div>
     <script type="text/javascript">
         var data
+        var cities = []
+        var ongkir = {
+            destination: 0,
+            courier: 0
+        }
+
+        function selectCity(id)
+        {
+            var idProvince = id
+            if(idProvince != "") {
+                $.ajax({
+                    url: "cart/getcity/"+idProvince,
+                    method: "POST",
+                    data: {
+                        '_token': $("[name=csrf-token]").attr('content'),
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        cities = data
+                        $("#city_id").removeAttr("disabled")
+                        
+                        retreiveCity(cities)
+                    }
+                })
+            }
+        }
+
+        function getOngkir(val, type = "city")
+        {
+            if(type == "courier") {
+                ongkir.courier = val
+            }else {
+                ongkir.destination = val
+            }
+
+            if(ongkir.courier > 0 && ongkir.destination > 0) {
+                $.ajax({
+                    url: "cart/getongkir",
+                    method: "POST",
+                    data: {
+                        '_token': $("[name=csrf-token]").attr('content'),
+                        'courier': ongkir.courier,
+                        'destination': ongkir.destination
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        console.log("getongkir =>", data)
+                    }
+                })
+            }
+        }
+
+        function retreiveCity(data)
+        {
+            $("#city_id option").remove()
+            $.each(data, function(i, item) {
+                if(i == 0) {
+                    getOngkir(item.id, "city")
+                }
+                $("#city_id").append($("<option>", {
+                    value: item.id,
+                    text: item.type + " " + item.city_name,
+                }))
+            })
+        }
+        
         function checkedProduct(id, data)
         {
             if(data.checked == false) {
@@ -122,6 +238,7 @@
                 countCart(id, 1, data.checked)
             }
         }
+
         function changeQuantity(id)
         {
             var quantity = $("#quantity_"+id).val()
@@ -177,5 +294,6 @@
                 }
             })
         }
+        
     </script>
 @endsection

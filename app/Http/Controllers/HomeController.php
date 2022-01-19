@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Product;
-use App\Model\Category;
 use App\Repositories\Contract\ProductInterface;
 use App\Repositories\Contract\CategoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 class HomeController extends Controller
 {
     private $product;
@@ -21,7 +20,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        
+        dd($request->session()->get('cart'));
         $product = $this->product->showProduct('0', '1', 6);
         return view('welcome', ['product' => $product, 'category' => $this->category->index(), 'searchtext' => null]);
     }
