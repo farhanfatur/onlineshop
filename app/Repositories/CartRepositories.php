@@ -57,7 +57,9 @@ class CartRepositories implements CartInterface
         if(intval($request->quantity) > $product->quantity) {
             return ["error" => "Quantity is too much", "quantity" => $carts[$id]['capacity']];
         }else {
+            // update session cart
             $carts[$id]['capacity'] = $request->quantity;
+            $carts[$id]['weight'] = $request->weight * $request->quantity;
             $carts[$id]['total_price'] = $carts[$id]['price'] * $request->quantity;
             Session::put('cart', $carts);
             if($request->quantity == 0) {
@@ -68,6 +70,8 @@ class CartRepositories implements CartInterface
             
         	$product->save();
         }
+
+        
 
         return $carts;
 	}

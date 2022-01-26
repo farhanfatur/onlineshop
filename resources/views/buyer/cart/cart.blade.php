@@ -38,7 +38,7 @@
                     <div class="form-group row">
                         <div class="col-md-4">
                             <label for="bank">Bank</label>
-                            <select name="bank_id" id="bank_id" class="form-control" {{count($bank) > 0 ? '' : 'disabled'}} >
+                            <select name="bank_id" id="bank_id" class="form-control" {{count($bank) > 0 ? '' : 'disabled'}}>
                                 @if(count($bank) > 0)
                                     @foreach($bank as $data)
                                     <option value="{{ $data->id }}">{{ $data->name }}</option>
@@ -68,16 +68,12 @@
                     </div>
                     <!-- Ongkir table -->
                     <div class="row">
-                        <div class="col-md-12">
-                            <h4>Ongkir</h4>
-                            <hr>
-                        </div>
+                        <div id="titleOngkir"></div>
                     </div>
+                    <!-- courier list -->
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="table table-bordered">
-
-                            </table>
+                            <div id="courierList"></div>
                         </div>
                     </div>
                     <table class="table table-bordered">
@@ -97,7 +93,7 @@
                             </td>
                             <td>{{ $cart['name'] }}</td>
                             <td>
-                                <input type="number" name="quantity[{{ $cart['id'] }}]" id="quantity_{{ $cart['id'] }}" value="{{ $cart['capacity'] }}" min="0" style="width: 50px;" max="5" onchange="changeQuantity('{{ $cart['id'] }}')">
+                                <input type="number" name="quantity[{{ $cart['id'] }}]" id="quantity_{{ $cart['id'] }}" value="{{ $cart['capacity'] }}" min="0" style="width: 50px;" max="5" onchange="changeQuantity('{{ $cart['id'] }}', '{{ $cart['weight'] }}')">
                             </td>
                             <td>Rp. <span id="price_{{ $cart['id'] }}">
                                 @if($cart['capacity'] == 0)
@@ -126,9 +122,9 @@
                                      $total += $cart['total_price'];
                                     @endphp
                                 @endforeach
-                                <input type="hidden" name="total_price" id="total_price_hidden" value="{{ $total }}">Rp. <span id="total_price">{{ number_rupiah($total) }}</span>
+                                    <input type="hidden" name="total_price" id="total_price_hidden" value="{{ $total }}">Rp. <span id="total_price">{{ number_rupiah($total) }}</span>
                                 @else
-                                Rp. 0
+                                    Rp. 0
                                 @endif
                             </td>
                             <td>
@@ -159,11 +155,47 @@
     </div>
 </div>
     <script type="text/javascript">
-        var data
+        // var data
+        var couriers = []
         var cities = []
         var ongkir = {
             destination: 0,
-            courier: 0
+            courier: 0,
+            bank: 0
+        }
+
+        function getCourier(data)
+        {
+            $("#courierList").empty()
+            $("#titleOngkir").empty()
+            $("#titleOngkir").append($(`<div class="col-md-12">
+                            <h4>Ongkir</h4>
+                            <hr>
+                        </div>`))
+            $.each(data, function(i, item) {
+                var val = JSON.stringify(item)
+
+                $("#courierList").append($(`
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="typeCourier" id="typeCourier${item.service}" onchange='countCourierTotal(${val})'>
+                                <label class="form-check-label" for="typeCourier${item.service}">${item.service}(${item.description}) / ${item.cost[0].etd} days | Rp.<span id="cost">${item.cost[0].value}</span></label>
+                            </div>
+                `))
+                // var cost = parseInt($("#cost").text())
+                // $("#cost").text((cost/1000).toFixed(3))
+            })
+        }
+
+        function countCourierTotal(val)
+        {
+            var total = parseInt($("#total_price_hidden").val())
+            var cost = val.cost[0].value
+            var totalCost = total + cost
+
+            $("#total_price_hidden").val(totalCost)
+            $("#total_price").text((totalCost/1000).toFixed(3))
+            cost = 0
+            totalCost = 0
         }
 
         function selectCity(id)
@@ -182,7 +214,8 @@
                         $("#city_id").removeAttr("disabled")
                         
                         retreiveCity(cities)
-                    }
+                    },
+                    
                 })
             }
         }
@@ -206,7 +239,9 @@
                     },
                     dataType: "json",
                     success: function(data) {
-                        console.log("getongkir =>", data)
+                        couriers = data.costs
+                        
+                        getCourier(couriers)
                     }
                 })
             }
@@ -239,7 +274,7 @@
             }
         }
 
-        function changeQuantity(id)
+        function changeQuantity(id, weight)
         {
             var quantity = $("#quantity_"+id).val()
             if(quantity == 0) {
@@ -247,14 +282,14 @@
                 $("#quantity_"+id).val(0)
                 $("#price_"+id).text(0)
                 $("#sub_price_"+id).text(0)
-                countCart(id, 0, false)
+                countCart(id, 0, false, weight)
             }else {
-               countCart(id, quantity, true)
+               countCart(id, quantity, true, weight)
             }
         }
 
 
-        function countCart(id, quantity, boolProduct = true)
+        function countCart(id, quantity, boolProduct = true, weight)
         {
             $.ajax({
                 url: "{{ route('editQuantity') }}",
@@ -263,6 +298,7 @@
                     '_token': $("[name=csrf-token]").attr('content'),
                     'id': id,
                     'quantity': quantity,
+                    'weight': weight
                 },
                 dataType: 'json',
                 success: function (data, status) {

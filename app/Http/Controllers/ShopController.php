@@ -10,24 +10,27 @@ use App\Repositories\Contract\CartInterface;
 use App\Repositories\Contract\ProvinceInterface;
 use App\Repositories\Contract\CityInterface;
 use App\Repositories\Contract\CourierInterface;
+use App\Repositories\Contract\ProductInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class ShopController extends Controller
 {
-    private $cart, $bank, $province, $city, $courier;
+    private $cart, $bank, $province, $city, $courier, $product;
 
     public function __construct(CartInterface $cart, 
                     BankInterface $bank, 
                     ProvinceInterface $province,
                     CityInterface $city,
-                    CourierInterface $courier)
+                    CourierInterface $courier,
+                    ProductInterface $product)
     {
         $this->cart = $cart;
         $this->bank = $bank;
         $this->province = $province;
         $this->city = $city;
         $this->courier = $courier;
+        $this->product = $product;
     }
 
     public function storeCart(Request $request)
@@ -70,12 +73,10 @@ class ShopController extends Controller
         $findId = $this->courier->find($request->courier);
         $weight = 0;
         $carts = $request->session()->get('cart');
-        foreach($carts as $cart) {
-            $weight += $cart["weight"];
-        }
-        $ongkir = $this->courier->getOngkir($request->destination, $weight, strtolower($findId->name));
+        $sellerProduct = $this->product->getCart($carts);
+        $ongkir = $this->courier->getOngkir($request->destination, strtolower($findId->name), $sellerProduct);
 
-        return response()->json($ongkir->rajaongkir->results);
+        return response()->json($ongkir);
     }
 
     public function deleteCapacityCart(Request $request, $id)

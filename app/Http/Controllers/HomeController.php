@@ -20,7 +20,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        dd($request->session()->get('cart'));
+        // dd($request->session()->get('cart'));
         $product = $this->product->showProduct('0', '1', 6);
         return view('welcome', ['product' => $product, 'category' => $this->category->index(), 'searchtext' => null]);
     }

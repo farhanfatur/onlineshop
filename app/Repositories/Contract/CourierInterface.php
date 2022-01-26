@@ -8,5 +8,5 @@ interface CourierInterface
 
     public function find($id);
 
-    public function getOngkir($destination, $weight, $courier);
+    public function getOngkir($destination, $courier, $sellerProduct);
 }
