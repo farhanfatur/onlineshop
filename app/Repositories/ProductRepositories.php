@@ -50,13 +50,13 @@ class ProductRepositories implements ProductInterface
 
 	public function showProduct($isDelete = 0, $isSold = 0, $paginate = 3)
 	{
-		$product = Product::where('is_delete', $isDelete)->where('is_sold', $isSold)->paginate($paginate);
+		$product = $this->product::where('is_delete', $isDelete)->where('is_sold', $isSold)->paginate($paginate);
 		return $product;
 	}
 
 	public function showByParam($param, $val, $operator = "=", $paginate = 3)
 	{
-		$product = Product::where($param, $operator, $val)->where('is_delete', '0')->paginate($paginate);
+		$product = $this->product::where($param, $operator, $val)->where('is_delete', '0')->paginate($paginate);
 		return $product;
 	}
 
@@ -71,10 +71,23 @@ class ProductRepositories implements ProductInterface
 
 	public function deactive($id)
 	{
-		$product = Product::find($id)->update([
+		$product = $this->product::find($id)->update([
     		'is_sold' => '0',
     	]);
 
+		return $product;
+	}
+
+	public function getCart($carts)
+	{
+		$product = [];
+		foreach($carts as $cart) {
+			$sellerProduct = $this->product->with('seller')->where('id', $cart['id'])->first();
+			$product[$sellerProduct->id] = ["id" => $sellerProduct->seller->id, 
+											"weight" => $cart['weight'],
+											"province" => $sellerProduct->seller->province_id, 
+											"city" => $sellerProduct->seller->city_id];
+		}
 		return $product;
 	}
 

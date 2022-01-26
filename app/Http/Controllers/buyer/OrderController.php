@@ -46,8 +46,6 @@ class OrderController extends Controller
         return redirect()->route('indexOrderBuyer');
     }
 
-  
-
     public function isCancel($id)
     {
         $idOrder = $this->orderBuyer->cancel($id);

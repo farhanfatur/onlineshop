@@ -19,9 +19,14 @@ class CreateBuyersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedInteger("province_id")->nullable();
+            $table->unsignedInteger("city_id")->nullable();
             $table->string('address');
             $table->string('phone', 20);
             $table->date('datebirth');
+
+            $table->foreign('province_id')->references('id')->on('provinces')->onDelete('cascade');
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -12,7 +12,9 @@ Route::group(['middleware', 'buyerMiddleware'], function () {
 	Route::post('/storecart', 'ShopController@storeCart')->name('storeCartBuyer');
 	Route::get('/cart', 'ShopController@indexCart')->name('indexCart');
 	Route::get('/cart/deletecapacity/{id}', 'ShopController@deleteCapacityCart');
+	Route::post('/cart/getongkir', 'ShopController@getOngkir');
 	Route::post('/cart/editquantity', 'ShopController@editQuantity')->name('editQuantity');
+	Route::post('/cart/getcity/{id}', 'ShopController@getProvinceCart')->name('getProvinceCart');
 	Route::post('/cart/updatecapacity/', 'ShopController@updateQuantityCart')->name('updateQuantityCart');
 	Route::post('/cart/order/store', 'ShopController@storeOrderCart')->name('storeOrderCart');
 

@@ -3,9 +3,9 @@
 namespace App\Repositories;
 
 use App\Model\Product;
-use App\Model\Bank;
-use Illuminate\Support\Facades\Session;
 use App\Repositories\Contract\CartInterface;
+use Illuminate\Support\Facades\Session;
+use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CartRepositories implements CartInterface
@@ -13,20 +13,17 @@ class CartRepositories implements CartInterface
 	use AuthorizesRequests;
 
 	protected $product;
-	protected $bank;
 
-	public function __construct(Product $product, Bank $bank)
+	public function __construct(Product $product)
 	{
 		$this->product = $product;
-		$this->bank = $bank;
 	}
 
 	public function index($request)
 	{
 		$product = $request->session()->get('cart');
-        $bank = $this->bank::all();
 
-        return ['product' => $product, 'bank' => $bank];
+        return $product;
 	}
 
 	public function store($request)
@@ -38,6 +35,7 @@ class CartRepositories implements CartInterface
                 'id' => $request->id,
                 'name' => $product->name,
                 'capacity' => 1,
+                'weight' => $product->weight,
                 'price' => $product->price,
                 'total_price' => $product->price * 1,
             ]);
@@ -57,9 +55,11 @@ class CartRepositories implements CartInterface
         $product = $this->product::find($request->id);
         $id = array_search($request->id, array_column($carts, 'id'));
         if(intval($request->quantity) > $product->quantity) {
-            return response()->json(["error" => "Quantity is too much", "quantity" => $carts[$id]['capacity']]);
+            return ["error" => "Quantity is too much", "quantity" => $carts[$id]['capacity']];
         }else {
+            // update session cart
             $carts[$id]['capacity'] = $request->quantity;
+            $carts[$id]['weight'] = $request->weight * $request->quantity;
             $carts[$id]['total_price'] = $carts[$id]['price'] * $request->quantity;
             Session::put('cart', $carts);
             if($request->quantity == 0) {
@@ -71,12 +71,16 @@ class CartRepositories implements CartInterface
         	$product->save();
         }
 
+        
+
         return $carts;
 	}
 
 	public function storeOrder($request)
 	{
+        $seller = auth()->guard("seller");
 		$now = date('Y-m-d');
+        $client = new Client();
         $carts = $request->session()->get('cart');
         $order = auth()->guard('buyer')->user()->order()->create([
             'dateorder' => $now,
